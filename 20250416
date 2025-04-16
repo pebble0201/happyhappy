@@ -1,4 +1,437 @@
 250416 교육일지
+
+css실습
+
+문제11
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>피그마11</title>
+    <style>
+        .box {
+            width: 320;
+            height: 320;
+            top: 16px;
+            left: 16px;
+        }
+
+        #an {
+            margin-top: -310px;
+            margin-left: 20px;
+            font-weight: 500;
+            font-size: 200%;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box"><img src="/sample/image/5ae1d7f16b2636dbaf920ad6a0f13776 1.png">
+        <div id="an">인테리어 디자인</div>
+    </div>
+
+</body>
+
+</html>
+
+문제 12
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>피그마12</title>
+    <style>
+        .box {
+            width: 320px;
+            height: 320px;
+           
+            background-image: url("/sample/image/5ae1d7f16b2636dbaf920ad6a0f13776 1.png");
+        }
+
+        #an {
+            /* margin-top: -310px; */
+            margin-left: 20px;
+            font-weight: 500;
+            font-size: 200%;
+            color: white;
+        }
+..
+        #blue {
+            background: #92F8FF;
+            width: 32px;
+            height: 32px;
+            border-radius: 99px;
+        }
+
+        #pink {
+            background: #FF9292;
+            width: 32px;
+            height: 32px;
+            border-radius: 99px;
+        }
+
+        #yellowgreen {
+            background:#E3FF92;
+            width: 32px;
+            height: 32px;
+            border-radius: 99px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+       
+        <div id="an"><b>인테리어 디자인</b></div>
+        <div id="blue"></div>
+        <div id="pink"></div>
+        <div id="yellowgreen"></div>
+    </div>
+
+
+</body>
+
+</html>
+
+문제13
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>피그마13</title>
+    <style>
+        .block-test3 {
+            display: block;
+        }
+
+        .block {
+            width: 250px;
+            height: 150px;
+            color: black;
+..
+        }
+
+        .area1 {
+            background: #FFB9B9;
+            width: 250px;
+            height: 150px;
+            border-radius: 8px;
+        }
+
+        .area2 {
+            background: white;
+            border: 1px solid #FFB9B9;
+        }
+
+        #grey {
+            background: #D9D9D9;
+            width: 24px;
+            height: 24px;
+            border-radius: 99px;
+            display: inline-block;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="block block-test3 area1"></div>
+    <div class="block block-test3 area2"><p>안녕하세요. 텍스트입니다.</p>
+     <span id="grey"></span>
+    <span>휴양죠</span>   
+    </div>
+    
+    
+</body>
+
+</html>
+
+문제14
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>피그마14</title>
+    <style>
+        #sero {
+            background: #FFB9B9;
+            width: 120px;
+            height: 170px;
+            border-radius: 8px;
+        }
+        #grey {
+            background: #D9D9D9;
+            width: 24px;
+            height: 24px;
+            border-radius: 99px;
+            
+            
+        }
+
+        #text {
+            font-family: Inter;
+            font-weight: 400;
+            font-size: 12px;
+            line-height: 100%;
+            letter-spacing: 0%;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="sero"><div id=grey></div></div>
+    <p id="text">나른한 점심시간, 밖<br>
+        에서 밥먹기</p>
+</body>
+
+</html>
+
+문제15
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>피그마15</title>
+    <style>
+        #in {
+            font-size: 200%;
+            font-weight: 700;
+        }
+        #id {
+            
+            width: 278px;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid #C3C3C3;
+            
+           
+            
+        }
+        #pwd {
+            
+            width: 278px;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid #C3C3C3;
+            
+        }
+
+        #green {
+            background: #17B75E;
+            width: 278px;
+            height: 48px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #log {
+           
+            color: white;
+            text-align: center;
+        }
+
+
+    </style>
+</head>
+<body>
+    <p id="in">로그인</p>
+    <p>아이디</p>
+    <div id="id"></div>
+    <p>비밀번호</p>
+    <div id="pwd"></div>
+    <div id="green"><p id="log">로그인</p></div>
+</body>
+</html>
+
+문제16
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>피그마16</title>
+    <style>
+        #box {
+            width: 336px;
+            height: 148px;
+            border: 1px solid #C3C3C3;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        #log {
+            background: #17B75E;
+            color: #FFFFFF;
+            text-align: center;
+            margin: auto;
+            font-size: 150%;
+            width: 288px;
+            height: 48px;
+            border-radius: 8px;
+        }
+
+        #find {
+            text-align: center;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="box"><p>사이트를 더 안전하고 편리하게 이용하세요.</p>
+        <div id="log">로그인</div>
+        <p id="find">아이디 찾기 | 비밀번호 찾기 | 회원가입</p>
+    </div>
+</body>
+
+</html>
+
+문제17
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>피그마17</title>
+    <style>
+        #pic {
+            width: 300;
+            height: 250;
+            top: 16px;
+            left: 16px;
+            border-radius: 8px;
+..
+        }
+    </style>
+</head>
+
+<body>
+    <div id=pic><img src="/sample/image/5d321fb507d0eb2d2d0ad8c1a08eb75e 1.png"></div>
+</body>
+
+</html>
+
+문제18
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>피그마18</title>
+    <style>
+        
+
+        .block-test2 {
+            display: inline-block;
+            
+        }
+        .block {
+            width: 160px;
+            height: 100px;
+            border-radius: 8px;
+            
+            
+        }
+
+        .area1 {
+            width: 160px;
+            height: 100px;
+            border-radius: 8px;
+            background: #FFB9B9;
+        }
+
+        .area2 {
+            background: #FFE4E4;
+            margin-left: -6px;
+        }
+        #smallpink {
+            background: #FFB9B9;
+            width: 96px;
+            height: 19px;
+        }
+
+        #ban {
+            color: white;
+            font-size: 12px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="pink"></div>
+    <div class="block block-test2 area1"></div>
+    <div class="block block-test2 area2">
+        <div id="smallpink">
+            <p id="ban">반가워요!</p></div>
+            <p>좋은하루보내세요!</p>
+            <p>날씨가 좋네요!</p>
+        
+    </div>
+</body>
+</html>
+
+문제19
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>피그마19</title>
+    <style>
+        #box {
+            background: pink;
+            width: 297px;
+            height: 35px;
+            text-align: center;
+            display: flex;
+        }
+
+        .web {
+            display: inline;
+            color: white;
+        }
+
+        #grey {
+            background: #D9D9D9;
+            width: 4px;
+            height: 4px;
+            border-radius: 9px;}
+
+    </style>
+</head>
+
+<body>
+    <div id="box">
+        <div class="web"><b>웹툰홈</b></div>
+        <div id="grey"></div>
+        <div class="web"><b>요일별웹툰</b></div>
+        <div id="grey"></div>
+        <div class="web"><b>베스트도전</b></div>
+    </div>
+
+</body>
+
+</html>
+
+javascript core
 /* 03_암묵적 타입 변환
 개발자가 의도적으로 값의 타입을 변환하는 것을 명시적 타입 변환이라고 하마ㅕ
 자바스크립트 엔진에 의해 암묵적으로 타입이 자동 변환되는 것을 암묵적 타입 변환이라고 한다.
