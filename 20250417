@@ -1,0 +1,198 @@
+250417 교육일지
+배운 것 복습
+
+1. 
+
+사용자가 입력한 숫자가 홀수인지 짝수인지 판별하는 함수를 작성하세요.
+
+(if - else 문 이용하기)
+
+
+function abc(num)
+{
+    if (num % 2 == 0){ //2로 나눴을때 나머지가 0이면(짝수)
+        console.log('짝수입니다');
+    }else{
+        console.log('홀수입니다');
+    }
+}
+
+abc(2);
+
+/*if(조건식){
+    실행문1;
+} else {
+    실행문2;
+}*/
+
+
+2. 
+
+아래의 객체를 for in 반복문을 사용하여, 객체의 모든 키와 그에 해당하는 값을 출력하는 코드를 작성하세요.
+
+var person = {
+    firstName: 'GilDong',
+    lastName: 'Hong',
+    age: 20
+};
+
+var person = { 
+    firstName : 'GilDong',
+    lastName : 'Hong',
+    age : 20,
+    getInfo : function(){
+        return `${this.firstName} ${this.lastName}은 ${this.age}입니다`;
+    }
+    };
+    
+    // aa = {firstName, lastName, age, getInfo}
+    // //person에 있는 프로퍼티의 키키
+
+    for(var aa/*(원하는 변수명)*/ in person) {
+        console.log(`key : ${aa}`);
+        console.log(`person[key] : ${person[aa]}`);
+        /*person[key] 편하게 보려고 쓴것*/
+        //person에 있는 변수 하나씩 꺼내서 변수에 담겠다는 뜻 
+        // person에 있는 거 쭉 찾아서 key라는 변수에 담겠다는 뜻 
+    }
+
+
+ 3.
+
+두 개의 숫자를 매개변수로 받아서 그 합을 반환하는 함수를 작성하세요.
+
+sum = (val1, val2) => val1+val2;
+/*val1매개변수*/
+console.log(sum(1,2));
+
+
+4.
+
+아래의 함수들을 화살표 함수로 변환해보세요.
+
+function greet() {
+    return "Hello!";
+}
+
+
+function getInfo(name, age) {
+    return `name: ${name}, age: ${age}`;
+}
+
+greet = function gr(){
+    return 'Hello!';
+}
+
+console.log(gr()); //return값이 있으니까 hello가 나옴
+
+function greet() {
+    return "Hello!";
+}
+
+getInfo = (name, age) => `name: ${name}, age: ${age}`;
+getInfo('ghdrlker', 20);
+
+
+5.
+
+아래의 코드를 실행했을 때 출력결과가 나오도록 Person 생성자 함수를 정의하세요.
+
+const person = new Person("홍길동", 20);
+person.sayHello();
+
+------- 출력 결과 --------
+안녕하세요, 제 이름은 홍길동 이고 나이는 20세입니다.
+
+function Person(name, age) {
+
+    //생성자 함수 내부의 this는 생성자 함수가 생성할 인스턴스(=객체)를 가리킨다.
+    this.name = name;
+    this.age = age;
+    this.sayHello = function () {
+        return `안녕하세요, 제 이름은 ${this.name} 이고 나이는 ${this.age}세입니다.`;
+    }
+}
+
+const person1 = new Person('홍길동',20);
+console.log(person1.sayHello());
+
+//메소드 호출
+console.log(person1.sayHello());
+
+//console.log은 그냥 출력
+//return화면에 송출되게~ 어딘가로 반환되는 아이
+
+
+6.
+
+(1) user 객체에 email 프로퍼티를 추가하고 "koala.ohgiraffers@gmail.com" 값을 넣으세요.
+(2) age 값을 21로 수정하세요.
+(3) name 값을 삭제하세요.
+
+const user = {
+   name : "koala",
+   age : 20
+};
+
+
+// const user = new Object();
+
+
+// user.email = "koala.ohgiraffers@gmail.com";
+
+
+// console.log(user);
+
+
+const user ={
+    
+        name : "koala",
+        age : 20
+     
+};
+
+
+
+//프로퍼티 동적 추가
+// user.email = "koala.ohgiraffers@gmail.com";
+user['email']='koala.ohgiraffers@gmail.com';
+user.age=21
+
+console.log(user);
+
+//프로퍼티 삭제
+delete user.name;
+
+console.log(user);
+
+
+7.
+
+car 객체와 fireCar 객체 정의하기
+-------------------------------------------------------------------------------
+- car 객체는 brand 프로퍼티를 갖고있다.
+- fireCar 객체는 brand, color 프로퍼티를 갖고 있고 car객체를 상속받는다.
+- fireCar 객체에서 brand는 상속받은 프로퍼티이고, color는 자기 자신의 프로퍼티이다.
+-------------------------------------------------------------------------------
+위의 예제에서 자기 자신의 프로퍼티와 상속된 프로퍼티를 구분하세요.
+
+const car = {
+    brand: 'abc',
+};
+
+const fireCar = {
+    color:'red',
+    __proto__:car
+};
+
+for(let prop in fireCar) {
+    console.log(prop);
+    let isOwn = fireCar.hasOwnProperty(prop); //isOwn이라는 변수 좌항에 있는건 내맘대로
+    if(isOwn){
+        console.log(`객체 자신의 프로퍼티 ${prop}`);
+    }
+    else {
+        console.log(`상속프로퍼티 ${prop}`);
+    }
+};
+
