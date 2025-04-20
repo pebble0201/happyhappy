@@ -1,0 +1,52 @@
+250420
+스터디 내용 정리
+
+내 문제 
+
+//['마라탕','김밥','떡볶이']만 도출되게 해보기
+
+const hungry = ['라면','칼국수','마라탕','김밥','떡볶이']
+hungry.shift();
+hungry.shift();
+
+console.log(hungry);
+
+시은님 문제
+
+/*
+다음 배열이 주어졌을 때:
+arr = [1, 2, 3]
+
+이 배열을 아래와 같이 변경해보세요:
+arr = [3, 4, 5, 6, 7]
+*/
+
+// for문 사용해보기!
+
+let arr = [1, 2, 3];
+
+arr.shift();
+arr.shift();
+
+for(i = 4; i <= 7; i++) {
+    arr.push(i);
+}
+
+console.log(arr);
+
+주혜님 문제
+
+/* 주혜 문제 */
+
+// 1. 50부터 100까지의 숫자를 랜덤으로 5개를 뽑은 후 내림차순으로 정렬한 배열을 구하시오.
+
+
+let arr = [];
+for(let i = 0; i < 5; i++){
+    arr[i] = Math.floor(Math.random() * (100 - 50 + 1)) + 50;
+}
+
+console.log(arr);
+const desc = arr.sort((a, b) => b - a);
+console.log(desc);
+
