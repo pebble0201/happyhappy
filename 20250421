@@ -40,6 +40,55 @@ js(web)
 </body>
 </html>
 
+  <!-- 시은님 문제 -->
+    <!-- // JavaScript를 react 이전에 추가하고 Spring은 삭제하시오.
+/*
+<li>HTML</li>
+<li>CSS</li>
+<li>JavaScript</li>
+<li>react</li>
+이렇게 나오게!
+ */ -->
+    <ul id="front">
+        <li>HTML</li>
+        <li>CSS</li>
+        <li>react</li>
+        <li>Spring</li>
+    </ul>
+
+    <script>
+        const $front = document.getElementById('front');
+
+        $front.removeChild($front.lastElementChild);
+
+        const $li = document.createElement('li')
+        $li.textContent = "JavaScript";
+        console.log($li);
+
+
+        $front.insertBefore($li, $front.lastElementChild);
+    </script>
+
+
+    <!-- 주혜님문제 -->
+    <!-- 
+        div 영역을 클릭했을 때 배경색이 파란색으로 변경되도록 하시오. (아래 사진 참고)
+        +응용) div 영역 클릭했을 때마다 색상이 랜덤으로 변하도록 하시오.
+    -->
+
+    <div id="area">
+        클릭하면 색이 변해요.
+    </div>
+    <script>
+        const $area = document.getElementById('area');
+        $area.addEventListener('click', function () {
+            $area.style.background = 'blue';
+
+        })
+
+
+    </script>
+
 오늘 배운 것
 
 <h1>02.요소노드의 텍스트 조작 </h1>
