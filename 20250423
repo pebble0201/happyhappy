@@ -1,0 +1,147 @@
+250423 교육일지
+
+실습 문제 1
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실습문제1</title>
+</head>
+
+<body>
+    <form name="num">
+        <input type="number" name="number" id="number">
+        <button id="click"> 클릭 </button>
+    </form>
+
+    <script>
+        const $num = document.forms.num;
+        const $number = $num.number;
+        // console.log($number);
+        // =const $number = $num.number.value;
+        const $click = document.getElementById('click');
+        // console.log($click);
+        // $num.onsubmit = () => {alert($value+10)}
+        // $click.onclick = () => {}
+        $click.addEventListener("click", () => {
+            const $value = $number.value; // String 값
+            console.log(Number($value));
+            alert(Number($value) + 10); // number로 변환
+        });
+    
+
+
+    </script>
+</body>
+
+</html>
+
+
+실습 문제 2
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실습문제2</title>
+</head>
+
+<body>
+    <form name ='sites'> 
+        <input type="radio" id="naver"><label>네이버</label><br>
+        <input type="radio" id="google"><label>구글</label><br>
+        <input type="radio" id="w3s"><label>w3schools</label>
+    </form>
+    <script>
+        // const $form = document.forms.sites;
+        // $form.onclick = () => {
+        //     $radio = this.querySelectorAll("input[type=radio]");
+        //     console.log($radio);
+        //  }
+        document.getElementById('naver').onclick = () => location.href = ('https://www.naver.com');
+        document.getElementById('google').onclick = () => location.href = ('https://www.google.com');
+        document.getElementById('w3s').onclick = () => location.href = ('https://www.w3schools.com');
+        
+    </script>
+</body>
+
+</html>
+
+실습 문제 3
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실습문제3</title>
+</head>
+
+<body>
+    <input type="checkbox" id="ja">Java<br>
+    <input type="checkbox" id="db">DataBase<br>
+    <input type="checkbox" id="wb">Web<br>
+
+    <button id="ck">클릭</button>
+    
+ <script>
+    const $button = document.getElementById('ck');
+    const $ja = document.getElementById('ja');
+    $button.onclick = () => {
+        $ja.checked = true;
+    }
+
+    </script>
+
+</body>
+
+</html>
+
+
+미완성 실습문제
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form name="practice">
+
+        <label for="username">이름</label><br>
+        <input type="text" name='username' id="username" size="50"><br><br>
+
+        <label for="email">이메일</label><br>
+        <input type="text" name='email' id="email" size="50"> <br><br>
+
+        <label>성별</label><br>
+        <input type="radio" name="gender" id="male" value="m"><label for="male">남자</label>
+        <input type="radio" name="gender" id="female" value="f"><label for="female">여자</label>
+<br><br>
+        <label>참여 일자 선택</label><br>
+        <select>
+            <option value="date">--날짜 선택--</option>
+        </select><br><br>
+
+        <label>요청 사항</label><br>
+        <textarea name="plz" id="plz" rows="8" cols="50" style="resize : none;"></textarea><br>
+        <span>0</span>/500자
+
+        <br><br>
+
+        <script>
+            $email.addEventListener('change', () => alert('이메일에 @ 기호가 포함되어야 합니다.'));
+        </script>
+
+    </form>
+    </form>
+</body>
+</html>
