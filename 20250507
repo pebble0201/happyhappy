@@ -1,1 +1,518 @@
 250507 교육일지
+
+실습문제 1.
+
+
+다음과 같은 조건을 만족하는 프로그램을 작성하시오. (1)
+
+반환형과 매개변수 유무에 따라 메소드를 작성하고, 이를 호출하거나 출력하시오.
+
+1. 구현 클래스 및 구현 내용
+
+com.ohgiraffers.level01.basic.member.model.dto.MemberDTO.java
+
+- id : String
+- pwd : String
+- name : String
+- age : int 
+- gender : char 
+- phone : String
+- email : String
+
++ MemberDTO()
+
++ setters / getters             // 필드 수정용 메소드 / 필드값 리턴용 메소드
+
+
+com.ohgiraffers.level01.basic.member.run.Application.java 
+
++ main(args:String[]):void       // 모든 메소드는 main함수에서 호출하여 출력시킨다.             
+
+------------------------------------------------------------------------------------
+
+2. Application 클래스 작성 내용
+
+public class Application {
+    public static void main(String args[]) {
+         //getter를 이용해서 필드의 초기값 확인
+				 //setter를 이용해서 필드 값 변경
+				 //getter를 이용해서 변경된 필드값 확인
+    }
+}
+
+------------------------------------------------------------------------------------
+ 
+3. 실행 결과 예시
+
+id : null
+pwd : null
+name : null
+age : 0
+gender :
+phone : null
+email : null
+변경 후 id : user01
+변경 후 pwd : pass01
+변경 후 name : 홍길동
+변경 후 age : 20
+변경 후 gender : M
+변경 후 phone : 010-1234-5678
+변경 후 email : hong123@ohgiraffers.com
+
+나의 정답
+
+package com.ohgiraffers.level01.basic.member.model.dto;
+
+public class MemberDTO {
+
+    private String id;
+    private String pwd;
+    private String name;
+    private int age;
+    private char gender;
+    private String phone;
+    private String email;
+
+    public void setId(String id){
+        this.id = id;
+    }
+
+    public void setPwd(String pwd){
+        this.pwd = pwd;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public void setAge(int age){
+        this.age = age;
+    }
+    public void setGender(char gender){
+        this.gender = gender;
+    }
+    public void setPhone(String phone){
+        this.phone = phone;
+    }
+    public void setEmail(String email){
+        this.email = email;
+    }
+    public String getId() {
+        return id;
+    }
+    public String getPwd() {
+        return pwd;
+    }
+    public String getName() {
+        return name;
+    }
+    public int getAge() {
+        return age;
+    }
+    public char getGender() {
+        return gender;
+    }
+    public String getPhone() {
+        return phone;
+    }
+    public String getEmail() {
+        return email;
+    }
+}
+
+package com.ohgiraffers.level03.hard.emp.run;
+
+import com.ohgiraffers.level03.hard.emp.model.dto.EmployeeDTO;
+
+import java.util.Scanner;
+
+public class Application {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        System.out.println("직원 번호를 입력하세요 :");
+        int num = sc.nextInt();
+        System.out.println("직원 이름을 입력하세요 :");
+        String name = sc.next();
+        System.out.println("직원 부서를 입력하세요 :");
+        String dept = sc.next();
+        System.out.println("직원 직책을 입력하세요 :");
+        String job = sc.next();
+        System.out.println("직원 나이를 입력하세요 :");
+        int age = sc.nextInt();
+        System.out.println("직원 성별을 입력하세요 :");
+        String gender = sc.next();
+        System.out.println("직원 월급을 입력하세요 :");
+        int salary = sc.nextInt();
+        System.out.println("직원 보너스포인트를 입력하세요 :");
+        double bonusPoint = sc.nextDouble();
+        System.out.println("직원 전화번호를 입력하세요 :");
+        String phone = sc.next();
+        System.out.println("직원 주소를 입력하세요 :");
+        String address = sc.nextLine();
+        EmployeeDTO employeeDTO = new EmployeeDTO();
+
+        employeeDTO.setNumber(num);
+        employeeDTO.setName(name);
+        employeeDTO.setDept(dept);
+        employeeDTO.setJob(job);
+        employeeDTO.setAge(age);
+        employeeDTO.setGender(gender.charAt(0));
+        employeeDTO.setSalary(salary);
+        employeeDTO.setBonusPoint(bonusPoint);
+        employeeDTO.setPhone(phone);
+        employeeDTO.setAddress(address);
+
+        System.out.println(employeeDTO.getNumber());
+        System.out.println(employeeDTO.getName());
+        System.out.println(employeeDTO.getDept());
+        System.out.println(employeeDTO.getJob());
+        System.out.println(employeeDTO.getAge());
+        System.out.println(employeeDTO.getGender());
+        System.out.println(employeeDTO.getSalary());
+        System.out.println(employeeDTO.getBonusPoint());
+        System.out.println(employeeDTO.getPhone());
+        System.out.println(employeeDTO.getAddress());
+    }
+}
+
+
+문제 2.
+
+
+다음과 같은 조건을 만족하는 프로그램을 작성하시오. (2)
+
+반환형과 매개변수 유무에 따라 메소드를 작성하고, 이를 호출하거나 출력하시오.
+
+1. 구현 클래스 및 구현 내용
+
+com.ohgiraffers.level02.normal.book.model.dto.BookDTO.java
+
+- title : String
+- publisher : String
+- author : String
+- price : int 
+- discountRate : double
+
++ BookDTO()
++ BookDTO(title:String, publisher:String, author:String)
++ BookDTO(title:String, publisher:String, author:String, price:int, discountRate:double)
+
++ setters / getters             // 필드 수정용 메소드 / 필드값 리턴용 메소드
+
++ printInformation():void       // 필드값 출력용 메소드
+
+
+com.ohgiraffers.level02.normal.book.run.Application.java  
+
++ main(args:String[]):void       // 모든 메소드는 main함수에서 호출하여 출력시킨다.             
+
+------------------------------------------------------------------------------------
+
+2. Application 클래스 작성 내용
+
+public class Application {
+    public static void main(String args[]) {
+         //기본 생성자를 이용하여 인스턴스 생성 후 필드 값 출력
+				 //필드 3가지를 초기화하는 생성자를 이용하여 인스턴스 생성 후 필드 값 출력
+				 //모든 필드를 초기화하는 생성자를 이용하여 인스턴스 생성 후 필드
+    }
+}
+
+------------------------------------------------------------------------------------
+ 
+3. 실행 결과 예시
+
+null, null, null, 0, 0.0
+자바의 정석, 도우출판, 남궁성, 0, 0.0
+홍길동전, 활빈당, 허균, 5000000, 0.5
+
+나의 정답
+
+package com.ohgiraffers.level02.normal.book.model.dto;
+
+public class BookDTO {
+
+    private String title;
+    private String publisher;
+    private String author;
+    private int price;
+    private double discountRate;
+
+    //기본생성자
+    public BookDTO() {}
+
+    //매개변수있는 생성자
+    public BookDTO(String title, String publisher, String author){
+        this.title = title;
+        this.publisher = publisher;
+        this.author = author;
+
+    }
+    public BookDTO(String title, String publisher, String author, int price, double discountRate){
+        this(title, publisher, author);
+        this.price = price;
+        this.discountRate = discountRate;
+    }
+    public void setTitle(String title){
+        this.title = title;
+    }
+    public void setPublisher(String publisher){
+        this.publisher = publisher;
+    }
+    public void setAuthor(String author){
+        this.author = author;
+    }
+    public void setPrice(int price){
+        this.price = price;
+    }
+    public void setDiscountRate(double discountRate){
+        this.discountRate = discountRate;
+    }
+    public String getTitle(){
+        return title;
+    }
+    public String getPublisher() {
+        return publisher;
+    }
+    public String getAuthor() {
+        return author;
+    }
+    public int getPrice() {
+        return price;
+    }
+    public double getDiscountRate() {
+        return discountRate;
+    }
+
+    public void printInformation() {
+        System.out.println(this.title +" " + this.publisher +" " + this.author +" " +this.price +" " +this.discountRate);
+    }
+}
+
+
+package com.ohgiraffers.level02.normal.book.run;
+
+import com.ohgiraffers.level02.normal.book.model.dto.BookDTO;
+
+public class Application {
+
+    public static void main(String[] args) {
+
+        /*기본 생성자 이용 인스턴스 생성 후 필드 값 출력*/
+        BookDTO book = new BookDTO();
+        book.printInformation();
+
+
+        /* 필드 3가지 초기화 생성자 */
+        BookDTO book2 = new BookDTO("자바의 정석","도우출판","남궁성");
+        book2.printInformation();
+
+
+        /* 모든 필드 초기화 생성자 */
+        BookDTO book3 = new BookDTO("홍길동전","활빈당","허균",5000000,0.5);
+        book3.printInformation();
+    }
+}
+
+
+문제 3.
+
+
+다음과 같은 조건을 만족하는 프로그램을 작성하시오. (3)
+
+반환형과 매개변수 유무에 따라 메소드를 작성하고, 이를 호출하거나 출력하시오.
+
+1. 구현 클래스 및 구현 내용
+
+com.ohgiraffers.level03.hard.emp.model.dto.EmployeeDTO.java
+
+- number : int 
+- name : String
+- dept : String
+- job : String
+- age : int 
+- gender : char 
+- salary : int 
+- bonusPoint : double 
+- phone : String
+- address : String
+
++ EmployeeDTO()
+
++ setters / getters             // 필드 수정용 메소드 / 필드값 리턴용 메소드
+
+
+
+com.ohgiraffers.level03.hard.emp.run.Application.java
+
++ main(args:String[]):void       // 모든 메소드는 main함수에서 호출하여 출력시킨다.             
+
+------------------------------------------------------------------------------------
+
+2. Application 클래스 작성 내용
+
+public class Application {
+    public static void main(String args[]) {
+         //스캐너를 이용해서 모든 직원 정보를 입력 받아
+				 //기본 생성자로 인스턴스 생성 후 setter를 이용하여 필드 값 변경 후
+				 //getter를 이용하여 모든 필드 값 출력
+    }
+}
+
+------------------------------------------------------------------------------------
+
+
+3. 실행 결과 예시
+
+200
+홍길동
+영업부
+과장
+20
+남
+2000000
+0.5
+010-1234-5678
+서울시 서초구 서초동
+
+나의 정답
+
+package com.ohgiraffers.level03.hard.emp.model.dto;
+
+public class EmployeeDTO {
+
+    private int number;
+    private String name;
+    private String dept;
+    private String job;
+    private int age;
+    private char gender;
+    private int salary;
+    private double bonusPoint;
+    private String phone;
+    private String address;
+
+    public EmployeeDTO() {}
+
+    public void setNumber(int number){
+        this.number = number;
+    }
+    public void setName(String name){
+        this.name = name;
+    }
+    public void setDept(String dept){
+        this.dept = dept;
+    }
+    public void setJob(String job){
+        this.job = job;
+    }
+    public void setAge(int age){
+        this.age = age;
+    }
+    public void setGender(char gender){
+        this.gender = gender;
+    }
+    public void setSalary(int salary){
+        this.salary = salary;
+    }
+    public void setBonusPoint(double bonusPoint){
+        this.bonusPoint = bonusPoint;
+    }
+    public void setPhone(String phone){
+        this.phone = phone;
+    }
+    public void setAddress(String address){
+        this.address = address;
+    }
+    public int getNumber() {
+        return number;
+    }
+    public String getName() {
+        return name;
+    }
+    public String getDept() {
+        return dept;
+    }
+    public String getJob() {
+        return job;
+    }
+    public int getAge() {
+        return age;
+    }
+    public char getGender() {
+        return gender;
+    }
+    public int getSalary() {
+        return  salary;
+    }
+    public double getBonusPoint(){
+        return bonusPoint;
+    }
+    public String getPhone() {
+        return phone;
+    }
+    public String getAddress() {
+        return address;
+    }
+
+}
+
+
+package com.ohgiraffers.level03.hard.emp.run;
+
+import com.ohgiraffers.level03.hard.emp.model.dto.EmployeeDTO;
+
+import java.util.Scanner;
+
+public class Application {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        System.out.println("직원 번호를 입력하세요 :");
+        int num = sc.nextInt();
+        System.out.println("직원 이름을 입력하세요 :");
+        String name = sc.next();
+        System.out.println("직원 부서를 입력하세요 :");
+        String dept = sc.next();
+        System.out.println("직원 직책을 입력하세요 :");
+        String job = sc.next();
+        System.out.println("직원 나이를 입력하세요 :");
+        int age = sc.nextInt();
+        System.out.println("직원 성별을 입력하세요 :");
+        String gender = sc.next();
+        System.out.println("직원 월급을 입력하세요 :");
+        int salary = sc.nextInt();
+        System.out.println("직원 보너스포인트를 입력하세요 :");
+        double bonusPoint = sc.nextDouble();
+        System.out.println("직원 전화번호를 입력하세요 :");
+        String phone = sc.next();
+        System.out.println("직원 주소를 입력하세요 :");
+        String address = sc.nextLine();
+        EmployeeDTO employeeDTO = new EmployeeDTO();
+
+        employeeDTO.setNumber(num);
+        employeeDTO.setName(name);
+        employeeDTO.setDept(dept);
+        employeeDTO.setJob(job);
+        employeeDTO.setAge(age);
+        employeeDTO.setGender(gender.charAt(0));
+        employeeDTO.setSalary(salary);
+        employeeDTO.setBonusPoint(bonusPoint);
+        employeeDTO.setPhone(phone);
+        employeeDTO.setAddress(address);
+
+        System.out.println(employeeDTO.getNumber());
+        System.out.println(employeeDTO.getName());
+        System.out.println(employeeDTO.getDept());
+        System.out.println(employeeDTO.getJob());
+        System.out.println(employeeDTO.getAge());
+        System.out.println(employeeDTO.getGender());
+        System.out.println(employeeDTO.getSalary());
+        System.out.println(employeeDTO.getBonusPoint());
+        System.out.println(employeeDTO.getPhone());
+        System.out.println(employeeDTO.getAddress());
+    }
+}
