@@ -1,1 +1,88 @@
 250508 교육일지
+
+문제1.
+- 입출력
+
+입력 : AAABBBcccddd
+출력 : aaabbbCCCDDD
+
+나의 정답:
+const input = "AAABBBcccddd";
+let output = "";
+
+for (let char of input) {
+  if (char ==char.toUpperCase()) {
+    output += char.toLowerCase();
+  } else {
+    output+=char.toUpperCase();
+  }
+}
+
+console.log(output);
+
+문제2.
+
+순서가 없는 10개의 숫자가 공백으로 구분되어 주어진다. 주어진 숫자들 중 최댓값을 반환하라.
+
+입출력
+
+입력 : 10 9 8 7 6 5 4 3 2 1
+출력 : 10
+
+나의 정답:
+
+const input = "10 9 8 7 6 5 4 3 2 1";
+const numbers = input.split(" ").map(Number);
+const max = Math.max(...numbers);//최댓값
+
+console.log(max);
+
+- 문제 설명
+머쓱이는 추운 날에도 아이스 아메리카노만 마십니다. 아이스 아메리카노는 한잔에 5,500원입니다. 머쓱이가 가지고 있는 돈 money가 매개변수로 주어질 때, 머쓱이가 최대로 마실 수 있는 아메리카노의 잔 수와 남는 돈을 순서대로 담은 배열을 return 하도록 solution 함수를 완성해보세요.
+
+- 제한사항
+0 < money ≤ 1,000,000
+
+- 입출력 예
+money	  result
+5,500	  [1, 0]
+15,000	[2, 4000]
+
+- 입출력 예 설명
+입출력 예 #1
+5,500원은 아이스 아메리카노 한 잔을 살 수 있고 잔돈은 0원입니다.
+
+입출력 예 #2
+15,000원은 아이스 아메리카노 두 잔을 살 수 있고 잔돈은 4,000원입니다.
+
+int[] solution(int money) {//매개변수 money solution함수 저런식으로 쓰는거 맞나요
+        int price = 5500;  // 아아 가격
+        int drink = money / price;  // 최대 아메리카노
+        int remain = money % price;  // 남는 돈
+        
+너무 너무 어려워요 ..
+
+- 문제 설명
+문자열 my_string이 매개변수로 주어집니다. my_string을 거꾸로 뒤집은 문자열을 return하도록 solution 함수를 완성해주세요.
+
+- 제한사항
+1 ≤ my_string의 길이 ≤ 1,000
+
+- 입출력 예
+my_string	 return
+"jaron"	   "noraj"
+"bread"	   "daerb"
+
+- 입출력 예 설명
+입출력 예 #1
+my_string이 "jaron"이므로 거꾸로 뒤집은 "noraj"를 return합니다.
+
+입출력 예 #2
+my_string이 "bread"이므로 거꾸로 뒤집은 "daerb"를 return합니다.
+
+Str reversed = new Str(string);
+        return reversed.reverse.toString();
+    }
+
+    public static void main(String[] args) {
+}
