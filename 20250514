@@ -1,1 +1,14 @@
 250514 교육일지
+
+try {
+//예외가 발생할 가능성이 있는 문장을 넣는다.
+} catch (Exception1 e1) {
+//exception1 이 발생했을 경우, 이를 처리하기 위한 문장을 넣는다.
+} catch (Exception2 e2) {
+//exception2 이 발생했을 경우, 이를 처리하기 위한 문장을 넣는다.
+} catch (Exception3 e3) {
+//exception3이 발생했을 경우, 이를 처리하기 위한 문장을 넣는다.
+} finally {
+deleteTempFiles() //프로그램 설치에 사용된 임시 파일 삭제
+//try-catch구문이 종료되고 무조건 실행할 문장을 넣는다.
+}
