@@ -1,1 +1,225 @@
 250515 교육일지
+
+package com.ohgiraffers.section01.intenum;
+
+public class Application {
+
+    public static void main(String[] args) {
+
+        /* comment. 정수열거 패턴과 단점 이해 */
+
+        /* 1. 정수값만을 저장하고 있는 필드일 뿐이다. */
+        int subject1 = Subjects.JAVA;
+        int subject2 = Subjects.HTML;
+
+        if (subject1 == subject2) {
+            System.out.println("두 과목은 같은 과목이다.");//0이라서 같은과목이라 인식
+        }
+
+        /* 2. 이름 충돌 방지를 위해 접두어를 써서 구분해야 한다. */
+//        BACKEND_JAVASCRIPT = 0;
+//        FRONTEND_JAVASCRIPT = 0;
+
+        /* 3. 문자열로 출력하기 까다롭다. */
+        int num = 0;
+        String subjectText = "";
+
+        switch (num) {
+            case Subjects.JAVA:
+                subjectText = "JAVA";
+                break;
+            case Subjects.ORACLE:
+                subjectText = "ORACLE";
+                break;
+            case Subjects.JDBC:
+                subjectText = "JDBC";
+                break;
+        }
+        ;
+
+        System.out.println("subjectText = " + subjectText);
+
+        /* 4. 같은 그룹에 속한 상수들을 순회할 수 없다. (전체 상수의 개수 확인 불가능)*/
+
+        /* 5. 타입 안전을 보장할 수 없다. */
+
+        printSubject(Subjects.ORACLE);
+        printSubject(2); //대충 아무 숫자나 넣어도 에러가 발생하지 않음
+    }
+
+    public static void printSubject(int subjectNumber) {
+        String subject = "";
+
+        switch (subjectNumber) {
+            case Subjects.JAVA:
+                subject = "JAVA";
+                break;
+            case Subjects.ORACLE:
+                subject = "ORACLE";
+                break;
+            case Subjects.JDBC:
+                subject = "JDBC";
+                break;
+        }
+
+        System.out.println("22"+subject);
+    }
+}
+
+package com.ohgiraffers.section01.intenum;
+
+public interface Subjects {
+    //인터페이스의 모든 필드는 public static final이어야 하고
+    //모든 메소드는 public abstract이어야 함
+    //이 부분은 모든 인터페이스에 공통으로 적용되는 부분이라 제어자 생략가능(컴파일 시 자바 컴파일러가 자동으로 추가해줌)
+
+
+    public static final int JAVA = 0;
+    public static final int ORACLE = 1;
+    public static final int JDBC = 2;
+
+    public static final int HTML = 0;
+    public static final int CSS = 1;
+    public static final int JAVASCRIPT = 2;
+}
+
+
+package com.ohgiraffers.section02.enumtype;
+
+public class Application {
+
+    public static void main(String[] args) {
+
+        /* commnet. 열거형(Enum)을 이용하여 상수 열거 패턴의 단점 해결하는 것 이해 */
+        /* 1. 열거 타입으로 선언된 인스턴스는 싱글톤으로 관리되며 인스턴스가 한 개 임을 보장한다. */
+        Subjects subject1 = Subjects.JAVA;
+        Subjects subject2 = Subjects.HTML;
+
+        if(subject1 == subject2) {
+            System.out.println("두 과목은 같은 과목입니다.");
+        } else {
+            System.out.println("두 과목은 다른 과목입니다.");
+        }
+
+        //단일 인스턴스임을 보장하기에 == 비교가 가능
+        System.out.println(subject1 == Subjects.JAVA);
+
+        /* 2. 이름 충돌 방지를 위해 접두사를 쓰지 않아도 Enum 타입별로 네임스페이스를 가진다. */
+        /* 동일한 이름의 상수가 필요한 경우 네임스페이스를 다르게 한다.
+        * public enum Backend { JAVA, ORACLE, JDBC, JAVASCRIPT }
+        * public enum Frontend { HTML, CSS, JAVASCRIPT }
+        * */
+
+        /* 3. toString()을 이용하여 문자열로 변경하기 쉽다. */
+        System.out.println(Subjects.JAVA.toString());
+
+        /*4. values()를 이용하여 상수값 배열을 반환하고 이를 이용해 연속처리 할 수 있다. */
+        Subjects[] subjects = Subjects.values();
+        for(Subjects s : subjects) {
+            System.out.println(s);
+        }
+
+        /* 5. 타입 안전성이 보장한다.*/
+        printSubject(Subjects.HTML);
+//        printSubject(2); enumtype은 인스턴스이기 때문에 정수를 사용하는 경우 타입불일치로 컴파일 에러 발생
+    }
+
+    public static void printSubject(Subjects subjects) {
+        System.out.println(subjects.toString());
+    }
+}
+
+package com.ohgiraffers.section02.enumtype;
+
+public enum Subjects {
+
+    JAVA, //0
+    ORACLE, //1
+    JDBC, //2
+    HTML, //3
+    CSS, //4
+    JAVASCRIPT //5
+}
+
+
+package com.ohgiraffers.section03.grammar;
+
+public class Application {
+
+    public static void main(String[] args) {
+
+        /* comment. Enum의 문법에 대해 이해하고 사용 */
+//        UserRole userRole = new UserRole(); 쓸 수 없음
+        UserRole admin = UserRole.ADMIN; //이런식으로 접근 가능(참조해서 변수에 저장)
+        //싱글톤이기 때문인게 가장 큰데, enum클래스는 클래스가 로드될 때
+        //메모리에 올리게 되는데 그 때 인스턴스가 하나씩 생성
+        //userrole.admin 참조하게 되면 하나하나 인스턴스 만들게 되는 것
+        //생성되어있는 객체 참조하는 것 뿐
+        //new라는 키워드 쓸 필요 없음, 직접 인스턴스 생성할 수도 없음
+
+        System.out.println(admin);
+        System.out.println(admin.getNameToLowerCase());
+
+        UserRole2 consumer = UserRole2.CONSUMER;
+        System.out.println(consumer.ordinal()); //몇번째 인덱스인지 출력해주는 인덱스
+        System.out.println(consumer.ordinal() + " " + consumer.name() + " " + consumer.getDescription());
+        //최초 사용할때만 인스턴스 생성이 되기 때문에 생성자는 한번만 호출된다.
+        //생성자는 처음 상수가 있는 만큼 4번 호출된다.
+        UserRole2 consumer2 = UserRole2.CONSUMER;
+        System.out.println(consumer == consumer2);
+    }
+}
+
+
+package com.ohgiraffers.section03.grammar;
+
+public enum UserRole {
+
+    //하나하나 인스턴스화
+    GUEST,
+    CONSUMER,
+    PRODUCER,
+    ADMIN;
+    //아래 생성자 만들거면 위에 admin에 ; 찍기 (구분하기)
+
+    //기본생성자를 가질 수 있다.
+    //default와 private 접근 제한 사용 가능하지만 외부에서 호출을 불가능(묵시적으로 private)
+    //enum타입은 고정된 상수들의 집합으로,
+    //런타임이 아닌 컴파일 시에 모든 값이 결정되어 있어야한다.
+    //따라서 다른 클래스에서 enum타입에 접근해 동적으로 생성자를 이용해 어떤 값을 전달해 줄 수 없기 때문이다.
+    //단, 생성자를 가질 시 열거형 상수 선언 마지막에 세미콜론을 붙여야한다.
+    UserRole() {} //단일 인스턴스니 생성할 수 없다..?
+
+    public String getNameToLowerCase() {
+        return this.name().toLowerCase();
+    }
+}
+
+
+package com.ohgiraffers.section03.grammar;
+
+public enum UserRole2 {
+
+    //문자열도 같이 쓸 수 있음
+    GUESET("게스트"),
+    CONSUMER("구매자"),
+    PRODUCER("판매자"),
+    ADMIN("관리자");
+
+    private final String description;
+
+    /* 이러한 경우 매개변수 있는 생성자가 반드시 필요하다.
+    * enum 상수의 괄호 안에 넣은 값이 해당 생성자쪽으로 전달되며 Enum 인스턴스가 생성되고,
+    * 생성된 인스턴스는 싱글톤 객체이다.
+    * */
+
+    UserRole2(String description) {
+        this.description = description;
+        System.out.println("description = " + description);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+}
+
