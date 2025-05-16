@@ -1,1 +1,124 @@
 250516 교육일지
+
+mysql workbench 처음 실행한 날
+
+select와 order_by에 대해 간단하게 알아봤다.
+
+/*select*/
+SELECT절은 MYSQL의 가장 기본적인 명령어로 특정 테이블에서 원하는 데이터를 조회해서 가져오는데 사용된다.
+
+SELECT MENU_NAME
+  FROM TBL_MENU;
+
+SELECT
+      MENU_CODE,
+      MENU_NAME,
+      MENU_PRICE
+  FROM TBL_MENU;
+
+SELECT * FROM TBL_MENU; 이런 기능도 제공
+
+SELECT 6 + 3;
+SELECT 6 * 3;
+SELECT 6 % 3;
+
+SELECT NOW(); 이런 기능을 제공한다
+
+컬럼 별칭
+java에서 배운 concat을 sql에서도 이용할 수 있다.
+select concat('홍',' ','길동') as name;
+이렇게 되면 열 제목이 name으로 변경되고 홍 길동 ' ' <-이거 추가해서 홍 길동! 이된다.
+
+/*order by*/
+order by절은 select문과 함께 사용하며 결과 집합을 특정 열이나 열들의 값들에 따라 정렬하는데 사용한다.
+
+select
+      menu_code,
+      menu_name,
+      menu_price
+  from tbl_menu
+order by menu_price asc; 이렇게 오름차순으로 정렬한다 근데 기본값이 오름차순이다.
+따라서
+order by menu_price; 라고 써도 기본적으로 오름차순이 된다.
+
+select
+    menu_code,
+    menu_name,
+    menu_price
+  from tbl_menu
+order by menu_price dsec;
+         menu_name asc;
+이렇게 되면 code, name, price가 출력되는데 price는 desc 내림차순 정렬되고, name은 asc 오름차순 정렬된다.
+
+select
+      menu_code,
+      menu_name,
+      menu_price * menu_code
+from tbl_menu
+order by menu_price * menu_code desc; 이렇게 곱셈 기능도 제공한다.
+
+select
+      field(orderable_status, 'y', 'n')
+from tbl_menu;
+이러면 orderable_status가 y=1, n=2 로 쓰여 출력된다.
+y  1
+n  2 
+y  1 이런식으로
+
+select
+      menu_name,
+      orderable_status
+from tbl_menu
+order by field(orderable_status, 'n', 'y'); 이러면 status가 n인 친구들이 먼저 출력되고 밑에 y 값을 갖고있는 친구들이 출력된다.
+
+오름차순시 null을 처음으로 사용하는 방법
+
+select
+      category_code,
+      category_name,
+      ref_category_code
+from tbl_category
+order by ref_category_code; 
+이렇게 쓰면 code, name, ref category code가 나오고 null값을 갖고있던 식사, 음료, 디저트가 가장 위에 출력되고 밑의 숫자들은 오름차순 정렬이 된다.
+
+오름차순시 null값을 갖고있는 항목을 맨 마지막으로 보내는 방법은 *****is null*****
+
+select
+      category_code,
+      category_name,
+      ref_category_code
+from tbl_category
+order by ref_category_code; 여기에
+마지막 줄을
+order by ref_category_code is null; 
+*************is null을 붙여써주면 된다.
+
+내림차순 시 null을 마지막으로 보내는 방법은 
+
+select
+    category_code,
+    category_name,
+    ref_category_code
+from tbl_category
+order by ref_category_code desc; 
+마지막에 desc를 붙여주면 된다.
+
+내림차순 시 null을 처음으로 보내는 방법은
+
+select
+    category_code,
+    category_name,
+    ref_category_code
+from tbl_category
+order by ref_category_code;
+여기에
+마지막줄을
+order by ref_category_code is null desc, ref_category_code desc;
+이렇게 써주면 된다.
+********* is null desc, ref_category_code desc;
+
+원래 null갖고 있는 항목을 맨 마지막에 보내기 위해
+오름차순 시 is null을 order by절에 써줬다면
+
+*********null 갖고 있는 항목을 맨 처음으로 보낼 땐???? 하브루타를 통해 해결하자 !!
+
