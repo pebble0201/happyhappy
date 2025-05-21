@@ -1,5 +1,185 @@
 250521 교육일지
 
+sql, java, javascript 매일 2문제씩 문제 풀기
+
+1.
+- 문제 설명
+가위는 2 바위는 0 보는 5로 표현합니다. 가위 바위 보를 내는 순서대로 나타낸 문자열 rsp가 매개변수로 주어질 때, rsp에 저장된 가위 바위 보를 모두 이기는 경우를 순서대로 나타낸 문자열을 return하도록 solution 함수를 완성해보세요.
+
+- 제한사항
+0 < rsp의 길이 ≤ 100
+rsp와 길이가 같은 문자열을 return 합니다.
+rsp는 숫자 0, 2, 5로 이루어져 있습니다.
+
+- 입출력 예
+rsp	  result
+"2"	  "0"
+"205"	"052"
+
+- 입출력 예 설명
+입출력 예 #1
+"2"는 가위이므로 바위를 나타내는 "0"을 return 합니다.
+
+- 입출력 예 #2
+"205"는 순서대로 가위, 바위, 보이고 이를 모두 이기려면 바위, 보, 가위를 순서대로 내야하므로 “052”를 return합니다.
+
+나의 정답
+<java>
+public class Solution {
+    public static String solution(String rsp) {
+        StringBuilder result = new StringBuilder();
+        
+        for (char ch : rsp.toCharArray()) {
+            if (ch == '2') {
+                result.append('0'); // 가 → 바
+            } else if (ch == '0') {
+                result.append('5'); // 바 → 보
+            } else if (ch == '5') {
+                result.append('2'); // 보 → 가
+            }
+        }
+        
+        return result.toString();
+    }
+
+<javascript>
+
+function solution(rsp) {
+    let result = ''; //초기화
+
+    for (let ch of rsp) {
+        if (ch == '2') {
+            result = '0'; // 가 → 바
+        } else if (ch == '0') {
+            result = '5'; // 바 → 보
+        } else if (ch == '5') {
+            result = '2'; // 보 → 가
+        }
+    }
+
+    return result;
+}
+
+
+2.
+
+- 문제 설명
+프로그래머스 모바일은 개인정보 보호를 위해 고지서를 보낼 때 고객들의 전화번호의 일부를 가립니다.
+전화번호가 문자열 phone_number로 주어졌을 때, 전화번호의 뒷 4자리를 제외한 나머지 숫자를 전부 *으로 가린 문자열을 리턴하는 함수, solution을 완성해주세요.
+
+- 제한 조건
+phone_number는 길이 4 이상, 20이하인 문자열입니다.
+
+- 입출력 예
+phone_number	 return
+"01033334444"	"*******4444"
+"027778888"	  "*****8888"
+
+나의 정답
+<java>
+public class Solution {
+    public static String solution(String phone_number) {
+        int len = phone_number.length();
+        // 앞 부분 *
+        // 뒤 4자리 그대로
+        String masked = "*".repeat(len - 4);
+        return masked + phone_number.substring(len - 4);
+    }
+
+<javascript>
+function solution(phone_number) {
+    const len = phone_number.length;
+    const masked = '*'.repeat(len - 4);
+    return masked + phone_number.slice(-4); //문자열 끝에서부터 -4
+}
+
+//const phone = "01033334444";
+console.log(phone.slice(-4)); // 출력: "4444" 이런거 구글링~
+
+
+## 예제 1
+
+> 각 학생이 수강한 과목 수를 구하시오. (수강 안 한 학생은 제외)
+> 
+- 정답
+    
+    ```sql
+    SELECT S.STUDENT_NAME, COUNT(C.COURSE_ID) AS 수강과목수
+    FROM STUDENT S
+    JOIN COURSE C ON S.STUDENT_ID = C.STUDENT_ID
+    GROUP BY S.STUDENT_NAME;
+    ```
+    
+    🧾 `JOIN`으로 연결 → `GROUP BY`로 학생별 그룹 → `COUNT()`로 과목 수 집계
+    
+
+---
+
+## 예제 2
+
+> 수강한 과목이 2개 이상인 학생의 이름과 과목 수를 구하시오.
+> 
+> 
+> (모든 학생 포함, 수강 안 한 학생은 과목 수 0)
+> 
+- 정답
+    
+    ```sql
+    SELECT S.STUDENT_NAME, COUNT(C.COURSE_ID) AS 수강과목수
+    FROM STUDENT S
+    LEFT JOIN COURSE C ON S.STUDENT_ID = C.STUDENT_ID
+    GROUP BY S.STUDENT_NAME
+    HAVING COUNT(C.COURSE_ID) >= 2;
+    ```
+    
+    `LEFT JOIN`이기 때문에 과목 수 0도 나올 수 있기 때문에
+    
+    → `HAVING` 조건으로 2개 이상만 남긴다
+    
+
+---
+
+## 예제 3
+
+> 가장 수강 과목 수가 많은 학생의 이름을 구하시오.
+> 
+- 정답
+    
+    ```sql
+    SELECT STUDENT_NAME
+    FROM STUDENT
+    WHERE STUDENT_ID = (
+    	SELECT STUDENT_ID
+    	FROM COURSE
+    	GROUP BY STUDENT_ID
+    	ORDER BY COUNT(*) DESC
+    	LIMIT 1
+    )
+    ```
+    
+    서브쿼리에서 수강 과목 수 많은 학생 ID 추출 → 메인쿼리에서 이름만 조회
+    
+
+---
+
+## 예제 4 - 문제 오류가 있어서 수정했습니다
+
+> 컴퓨터 공학 전공 학생들이 수강한 전공 과목명만 중복 없이 조회하시오.
+> 
+- 정답
+    
+    ```sql
+    SELECT DISTINCT C.COURSE_NAME
+    FROM STUDENT S
+    JOIN COURSE C ON S.STUDENT_ID = C.STUDENT_ID
+    WHERE S.MAJOR = '컴퓨터공학';
+    ```
+    
+    ~~지피티의 사과….~~
+    
+    ![image.png](attachment:1169f1cc-528a-4884-9112-27897690e3e4:image.png)
+
+
 JDBC
 intellij 와 mysql 연결하는 시간
 bulid.gradle에 입력
