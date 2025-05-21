@@ -2,3 +2,11 @@
 
 JDBC
 intellij 와 mysql 연결하는 시간
+bulid.gradle에 입력
+```jsx
+implementation 'mysql:mysql-connector-java:8.0.33'
+```
+
+xml 위해...
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
