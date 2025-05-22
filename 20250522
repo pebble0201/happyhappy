@@ -13,3 +13,466 @@ Ex) stmt.executeQuery(SELECT * FROM Test;); //Test테이블로부터 받아온 �
  
 
 executeUpdate(String) - INSERT, UPDATE, DELETE 문을 실행할 때 사용, 수정한 레코드 수를 int형으로 반환
+
+package com.ohgiraffers.common;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.sql.*;
+import java.util.Properties;
+
+public class JDBCTemplate {
+
+    public static Connection getConnection() {
+
+        Connection con = null;
+
+        Properties prop = new Properties();
+
+        try {
+            prop.load(new FileReader("src/main/java/com/ohgiraffers/config/connection-info.properties"));
+
+            String driver = prop.getProperty("driver");
+            String url = prop.getProperty("url");
+
+            Class.forName(driver);
+
+            con = DriverManager.getConnection(url,prop);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+            return con;
+    }
+
+    public static void close(Connection con) {
+        try {
+            if(con != null && !con.isClosed()) {
+                    con.close();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public static void close(Statement stmt) {
+
+        try {
+            if(stmt != null && !stmt.isClosed()) {
+                stmt.close();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void close(ResultSet rset) {
+        try {
+            if(rset != null && !rset.isClosed()){
+                rset.close();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
+
+driver=com.mysql.cj.jdbc.Driver
+url=jdbc:mysql://localhost/menudb
+user=ohgiraffers
+password=ohgiraffers
+
+package com.ohgiraffers.section01.problem;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
+
+import static com.ohgiraffers.common.JDBCTemplate.close;
+import static com.ohgiraffers.common.JDBCTemplate.getConnection;
+
+public class Application {
+
+    public static void main(String[] args) {
+
+        Connection con = getConnection();
+
+        Properties prop = new Properties();
+
+        PreparedStatement pstmt1 = null;
+        PreparedStatement pstmt2 = null;
+        PreparedStatement pstmt3 = null;
+
+
+        ResultSet rset1 = null; //select니까
+        ResultSet rset2 = null;
+
+        int result = 0; //result하는 변수 필요 (3번째)
+
+        int maxMenuCode = 0;
+        List<Map<Integer, String>> categoryList = null;
+
+        try {
+            prop.loadFromXML(new FileInputStream("src/main/java/com/ohgiraffers/mapper/menu-query.xml"));
+            String query1 = prop.getProperty("selectLastMenuCode");
+            String query2 = prop.getProperty("selectAllCategoryList");
+            String query3 = prop.getProperty("insertMenu");
+
+            pstmt1 = con.prepareStatement(query1);
+            pstmt2 = con.prepareStatement(query2);
+            pstmt3 = con.prepareStatement(query3);
+
+            rset1 = pstmt1.executeQuery();
+
+            if(rset1.next()) { //마지막 번호만 뽑을거라서
+                maxMenuCode = rset1.getInt("max(a.menu_code)");
+            }
+            System.out.println("maxMenuCode = " + maxMenuCode);
+
+            rset2 = pstmt2.executeQuery();
+
+            categoryList = new ArrayList<>();
+
+            while (rset2.next()) {
+                Map<Integer, String> category = new HashMap<>();
+                category.put(rset2.getInt("CATEGORY_CODE"),rset2.getString("CATEGORY_NAME"));
+                categoryList.add(category);
+            }
+            System.out.println(categoryList);
+
+            Scanner sc = new Scanner(System.in);
+            System.out.print("등록할 메뉴의 이름 : ");
+            String menuName = sc.nextLine();
+            System.out.println("신규 메뉴의 가격 : ");
+            int menuPrice = sc.nextInt();
+            System.out.println("카테고리를 선택해주세요(식사, 음료, 디저트, 한식, 퓨전) : ");
+            sc.nextLine();
+            String categoryName = sc.nextLine();
+            System.out.println("바로 판매 메뉴에 적용할래?(응/아니) : ");
+            String answer = sc.nextLine();
+
+            int categoryCode = 0;
+            switch (categoryName) {
+                case "식사" : categoryCode = 1; break;
+                case "음료" : categoryCode = 2; break;
+                case "디저트" : categoryCode = 3; break;
+                case "한식" : categoryCode = 4; break;
+                case "퓨전" : categoryCode = 7; break;
+
+            }
+
+            String orderablsStatus = "";
+            switch (answer) {
+                case "응" : orderablsStatus = "Y"; break;
+                case "아니" : orderablsStatus = "N"; break;
+            }
+
+            pstmt3.setInt(1, maxMenuCode + 1);
+            pstmt3.setString(2, categoryName);
+            pstmt3.setInt(3,menuPrice);
+            pstmt3.setInt(4,categoryCode);
+            pstmt3.setString(5,orderablsStatus);
+
+            result = pstmt3.executeUpdate();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            close(rset1);
+            close(rset2);
+            close(pstmt1);
+            close(pstmt2);
+            close(pstmt3);
+            close(con);
+        }
+        if(result>0) {
+            System.out.println("메뉴등록성공");
+        } else {
+            System.out.println("메뉴등록실패");
+        }
+    }
+}
+
+
+package com.ohgiraffers.section02.model.dao;
+
+import com.ohgiraffers.section02.model.dto.MenuDTO;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.*;
+import java.util.*;
+
+import static com.ohgiraffers.common.JDBCTemplate.close;
+
+/*DAO(Database Access Object) : 데이터베이스 접근용 객체
+* CRUD연산을 담당하는 메소드들의 집합으로 이루어진 클래스
+* */
+public class MenuDAO {
+
+    private Properties prop = new Properties();
+
+    public MenuDAO() {
+        try {
+            prop.loadFromXML(new FileInputStream("src/main/java/com/ohgiraffers/mapper/menu-query.xml"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    //메소드가 호출될 때 실행되어야해서 필드에 작성하면 안됨
+    public int selectLastMenuCode(Connection con) {
+
+        Statement stmt = null;
+        ResultSet rset = null;
+
+        int maxMenuCode = 0;
+
+        String query = prop.getProperty("selectLastMenuCode");
+
+        try {
+            stmt = con.createStatement();
+            rset = stmt.executeQuery(query);
+
+            // 단일행나오니까
+            if(rset.next()) {
+                maxMenuCode = rset.getInt("max(a.menu_code)");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            close(rset);
+            close(stmt);
+        }
+
+        return maxMenuCode;
+    }
+
+    public List<Map<Integer,String>> selectAllCategory(Connection con) {
+
+        Statement stmt = null;
+        ResultSet rset = null;
+
+        List<Map<Integer,String>> categoryList = null;
+
+        String query = prop.getProperty("selectAllCategoryList");
+
+        try {
+            stmt = con.createStatement();
+            rset=stmt.executeQuery(query);
+
+            categoryList = new ArrayList<>();
+
+            while (rset.next()) {
+                Map<Integer,String> category = new HashMap<>();
+                category.put(rset.getInt("CATEGORY_CODE"),rset.getString("CATEGORY_NAME"));
+
+                categoryList.add(category);
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            close(rset);
+            close(stmt);
+
+        }
+
+        return categoryList;
+
+    }
+
+    public int insertNewMenu(Connection con, MenuDTO newMenu) {
+
+        PreparedStatement pstmt = null;
+
+        int result = 0;
+
+        String query = prop.getProperty("insertMenu");
+
+        try {
+            pstmt = con.prepareStatement(query);
+            pstmt.setInt(1,newMenu.getCode());
+            pstmt.setString(2,newMenu.getName());
+            pstmt.setInt(3,newMenu.getPrice());
+            pstmt.setInt(4,newMenu.getCategoryCode());
+            pstmt.setString(5,newMenu.getOrderableStatus());
+
+            result = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            close(pstmt);
+        }
+        return result;
+    }
+}
+
+
+
+package com.ohgiraffers.section02.model.dto;
+
+public class MenuDTO {
+
+    private int code;
+    private String name;
+    private int price;
+    private int categoryCode;
+    private String orderableStatus;
+
+    public MenuDTO() {}
+
+    public MenuDTO(int code, String name, int price, int categoryCode, String orderableStatus) {
+        this.code = code;
+        this.name = name;
+        this.price = price;
+        this.categoryCode = categoryCode;
+        this.orderableStatus = orderableStatus;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public int getCategoryCode() {
+        return categoryCode;
+    }
+
+    public void setCategoryCode(int categoryCode) {
+        this.categoryCode = categoryCode;
+    }
+
+    public String getOrderableStatus() {
+        return orderableStatus;
+    }
+
+    public void setOrderableStatus(String orderableStatus) {
+        this.orderableStatus = orderableStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "MenuDTO{" +
+                "code=" + code +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", categoryCode=" + categoryCode +
+                ", orderableStatus='" + orderableStatus + '\'' +
+                '}';
+    }
+}
+
+
+
+package com.ohgiraffers.section02.run;
+
+import com.ohgiraffers.section02.model.dao.MenuDAO;
+import com.ohgiraffers.section02.model.dto.MenuDTO;
+
+import java.sql.Connection;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+
+import static com.ohgiraffers.common.JDBCTemplate.getConnection;
+
+public class Application {
+
+    public static void main(String[] args) {
+
+        Connection con = getConnection();
+
+        MenuDAO registDAO = new MenuDAO();
+
+        /* 1.메뉴의 마지막 번호 조회 */
+        int maxMenuCode = registDAO.selectLastMenuCode(con); //con담아서 가져오기
+
+        System.out.println("메뉴의 마지막 번호 = " + maxMenuCode);
+        System.out.println();
+
+        /* 2. 카테고리 조회*/
+        List<Map<Integer, String>> categoryList = registDAO.selectAllCategory(con);
+
+        for(Map<Integer, String> category : categoryList) {
+            System.out.println("category = " + category);
+        }
+
+            /*3. 신규메뉴 등록*/
+            /* -1. 신규메뉴 등록을 위한 정보 입력*/
+            Scanner sc = new Scanner(System.in);
+            System.out.print("등록할 메뉴의 이름 : ");
+            String menuName = sc.nextLine();
+            System.out.println("신규 메뉴의 가격 : ");
+            int menuPrice = sc.nextInt();
+            System.out.println("카테고리를 선택해주세요(식사, 음료, 디저트, 한식, 퓨전) : ");
+            sc.nextLine();
+            String categoryName = sc.nextLine();
+            System.out.println("바로 판매 메뉴에 적용할래?(응/아니) : ");
+            String answer = sc.nextLine();
+
+            /* -2. 신규 메뉴 등록을 위한 값 가공*/
+            int menuCode = maxMenuCode + 1;
+
+            int categoryCode = 0;
+
+            switch (categoryName) {
+                case "식사" :categoryCode = 1; break;
+                case "음료" :categoryCode = 2; break;
+                case "디저트" :categoryCode = 3; break;
+                case "한식" :categoryCode = 4; break;
+                case "퓨전" :categoryCode = 7; break;
+
+            }
+            String orderableStatus = "";
+            switch (answer) {
+                case "응" : orderableStatus = "Y"; break;
+                case "아니" : orderableStatus = "N"; break;
+
+            }
+
+            MenuDTO newMenu = new MenuDTO(menuCode, menuName, menuPrice, categoryCode, orderableStatus);
+
+            /* -3. 신규메뉴 등록을 위한 메소드 호출하여 등록*/
+            int result = registDAO.insertNewMenu(con, newMenu);
+
+            if(result > 0) {
+                System.out.println("메뉴등록성공");
+            } else {
+                System.out.println("메뉴등록실패");
+            }
+        }
+    }
+
+
