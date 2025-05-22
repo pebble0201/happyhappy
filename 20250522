@@ -1,0 +1,15 @@
+250522 교육일지
+ResultSet
+ResultSet이란 대충 SELECT문을 실행하여 테이블로부터 얻은 결과를 저장하고있는 저장소라고 알면 되겠다.
+
+ 
+
+executeQuery(String) - SELECT(조회)문을 전송할 떄 사용하는 메서드로, ResultSet 자료형의 데이터를 반환한다.
+
+이 때, ResultSet이란 대충 SELECT문을 실행하여 테이블로부터 얻은 결과를 저장하고있는 저장소라고 알면 되겠다.
+
+Ex) stmt.executeQuery(SELECT * FROM Test;); //Test테이블로부터 받아온 데이터를 담고있는 ResultSet 반환
+
+ 
+
+executeUpdate(String) - INSERT, UPDATE, DELETE 문을 실행할 때 사용, 수정한 레코드 수를 int형으로 반환
