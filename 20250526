@@ -1,5 +1,83 @@
 250526 교육일지
 
+- 1번 문제제
+
+정수 배열 numbers와 정수 num1, num2가 매개변수로 주어질 때, 
+numbers의 num1번 째 인덱스부터 num2번째 인덱스까지 자른 정수 배열을 return 하도록 solution 함수를 완성해보세요.
+
+- 제한사항
+2 ≤ numbers의 길이 ≤ 30
+0 ≤ numbers의 원소 ≤ 1,000
+0 ≤num1 < num2 < numbers의 길이
+
+- 입출력 예
+numbers	num1	  num2	result
+[1, 2, 3, 4, 5]	1	3	  [2, 3, 4]
+[1, 3, 5]	      1	2	  [3, 5]
+
+- 입출력 예 설명
+입출력 예 #1
+[1, 2, 3, 4, 5]의 1번째 인덱스 2부터 3번째 인덱스 4 까지 자른 [2, 3, 4]를 return 합니다.
+입출력 예 #2
+[1, 3, 5]의 1번째 인덱스 3부터 2번째 인덱스 5까지 자른 [3, 5]를 return 합니다.
+
+<java 나의 정답>
+
+class Solution {
+    public int[] solution(int[] numbers, int num1, int num2) {
+        int[] answer = new int[num2 - num1 + 1];
+        int i = num1; 
+        int j = 0;
+        while (i != num2 + 1) {
+            answer[j] = numbers[i];
+            j++;
+            i++;
+        }
+        return answer;
+    }
+} //지은님코드 공부했어요,, 
+
+
+<javascript 나의 정답>
+
+function solution(numbers, num1, num2) {
+
+    return numbers.slice(num1, num2 + 1);
+}
+
+- 2번 문제 
+단어 s의 가운데 글자를 반환하는 함수, solution을 만들어 보세요. 단어의 길이가 짝수라면 가운데 두글자를 반환하면 됩니다.
+
+- 제한사항
+s는 길이가 1 이상, 100이하인 스트링입니다.
+
+- 입출력 예
+s	       return
+"abcde"	"c"
+"qwer"	"we"
+
+<java>
+
+
+class Solution {
+    public String solution(String s) {
+        int len = s.length();
+        if (len % 2 == 1) {
+            return s.substring(len / 2, len / 2 + 1);
+        } else {
+            return s.substring(len / 2 - 1, len / 2 + 1);
+        }
+<javascript>
+
+class Solution {
+    public String solution(String s) {
+        int len = s.length();
+        if (len % 2 == 1) {
+            return s.substring(len / 2, len / 2 + 1);
+        } else {
+            return s.substring(len / 2 - 1, len / 2 + 1);
+        }
+
 package com.ohgiraffers.section01.xml;
 
 import com.ohgiraffers.common.SearchCriteria;
