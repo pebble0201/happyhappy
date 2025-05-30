@@ -1,5 +1,50 @@
 250530 교육일지
 
+나 혼자 터미널 공부 
+인텔리제이로 pull push하는데 파일들이 안뜨거나 잘 안돼서 터미널을 통해 하는 방법을 알아봤다.
+그리고 crud 미니 프로젝트 실습을 마쳤다. 
+
+터미널 이용해 깃허브에 파일 업로드
+// 폴더 이동
+cd desktop
+cd folderName
+
+// 깃 저장소 초기화
+git init
+
+// 파일 스테이지
+// 전체 스테이지 원한다면 fileName에 . 입력
+git add fileName
+
+// 상태 확인
+git status
+
+// 업로드 확정 (커밋)
+git commit -m "commitName"
+
+// Repository 연결
+git remote add origin repositoryAddress
+
+// 연결 확인
+git remote -v
+
+// 아래처럼 출력되면 Ok
+origin	git@github.com:eeejihyeon/test.git (fetch)
+origin	git@github.com:eeejihyeon/test.git (push)
+
+// Local repository >> GitHub repository 보내기
+git push origin master
+
+// GitHub 새로고침 하면 업로드된 파일 확인
+파일 수정 후 업로드
+// 파일 수정 후 터미널에서 아래 명령어 입력 후 GitHub 새로고침
+// 추가하는 작업에서는 git init 할 필요 없음
+git add .
+git status
+git commit -m "commitName"
+git push origin master
+✓ 전체 add 하면 하위 폴더도 전부 올라감
+
 CRUD 협업 프로젝트 실습 
 
 package rentcar.run;
