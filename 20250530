@@ -13,6 +13,12 @@ servlet
 6. 동적 페이지 생성 후 ServletResponse 객체에 응답 전송
 7. HttpServletRequest, HttpServletResponse 객체 소멸
 
+@webServlet("/서블릿매핑이름")
+public class ThirdServlet extends HttpServlet {
+	... // 애너테이션을 이용해서 만드는 서블릿 클래스는 반드시 HttpServlet을 상속받아야 한다.
+}
+
+
 터미널 이용해 깃허브에 파일 업로드
 // 폴더 이동
 cd desktop
