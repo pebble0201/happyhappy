@@ -1,1 +1,83 @@
 250605 교육일지
+
+package com.ohgiraffers.aop;
+
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
+import org.springframework.stereotype.Component;
+
+@Aspect //aop기능 사용하겠다
+@Component
+public class LoggingAspect {
+
+    /* @Pointcut : 여러 join 포인트를 매치하기 위해 지정한 표현식
+    * execution([수식어]) 리턴타입 [클래스이름].이름(parameter)
+    * 수식어 생략 가능
+    * service.*(..) : 매개변수가 0개 이상인 모든 메소드
+    * service.*(*) : 매개변수가 1개 이상인 모든 메소드
+    * service.*(*,..) : 매개변수가 2개 이상인 모든 메소드*/
+
+    @Pointcut("execution(* com.ohgiraffers.aop.*Service.*(..))") //안에있는 method pointcut으로 사용하겠다
+    public void logPointcut() {} //반드시 void형식으로 method 작성
+
+    /*JoinPoint : 포인트컷으로 패치한 실행 지점
+    * 이렇게 매치된 조인포인트에서 해야 할 일이 어드바이스이다.
+    * 매개변수로 전달한 joinpoint 객체 현재 조인 포인트 메소드명, 인수값 등의 자세한 정보를 엑세스 할 수 있다.
+    * joinpoint들의 집합이 pointcut .!.?!!??*/
+
+    //target 이전 동작시키고 싶을 때.
+    @Before("LoggingAspect.logPointcut()")//before라는 advice 클래스명.메소드 이전에 동작할 ,,?
+    public void logBefore(JoinPoint joinPoint) {
+
+        System.out.println("Before joinPoint.getTarget() : " + joinPoint.getTarget());
+
+        //어떤 메소드 동작하고 있는지 확인할 수 있는 메소드
+        System.out.println("Before joinPoint.getSignature() : " + joinPoint.getSignature());
+
+        //getargument 인자를 object로 반환하기 때문에 0번째 인덱스에 뭐 있는지 확인 ,,?? 0나오면 매개변수 없다는 것 (실행시켜보니 안나오는디요!)크면 있다는 것
+        if(joinPoint.getArgs().length > 0) {
+            System.out.println("Before joinPoint.getArgs()[0] : " + joinPoint.getArgs()[0]);
+        }
+    }
+
+    /* After advice는 pointcut을 동일한 클래스 내에서 사용하는 것이면 클래스명은 생략 가능하다.
+    * 단, 패키지가 다르면 패키지를 포함한 클래스명을 기술해야한다.*/
+    @After("logPointcut()") //서비스가 동작한 이후에 동작할 어드바이스 지정한 것
+    public void logAfter(JoinPoint joinPoint) {
+
+        System.out.println("After joinPoint.getSignature() : " + joinPoint.getSignature());
+    }
+
+    /* returning 속성은 리턴값으로 받아올 오브젝트의 매개변수 이름과 동일해야 한다.
+    * 또한 반드시 첫 번째 매개변수로 선언해야한다.*/
+    @AfterReturning(pointcut = "logPointcut()", returning = "result")
+    public void logAFterRuturning(JoinPoint joinPoint, Object result) {
+        System.out.println("After Returning : " +result);
+    }
+
+    /* throwing 속성의 이름과 매개변수의 이름이 동일해야 한다.*/
+    @AfterThrowing(pointcut = "logPointcut()", throwing = "exception")
+    public void logAfterThrowing(Throwable exception) {
+        System.out.println("After Throwing : " + exception);
+
+    }
+
+    /* Around Advice는 가장 강력한 어드바이스
+    * 이 어드바이스는 조인포인트를 완전히 장악하기 때문에
+    * 앞에 살펴본 어드바이스 모두 Around 어드바이스로 조합할 수 있다.
+    * 심지어 원본 조인포인트를 언제 실행할지, 실행 자체를 안할지, 계속 실행할지 여부까지도 제어한다.
+    *
+    * 조인포인트 매개변수를 ProceedingJoinPoint로 고정이 되어있다.
+    * JoinPoint의 하위 인터페이스로 원본 조인포인트의 진행 시점을 제어할 수 있다.
+    * */
+    @Around("logPointcut()") //pointcut 지정..?
+    public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
+        //before 모든 실행 이전, after 실행 이후 동작함! ! ! ! !
+        System.out.println("Around Before " + joinPoint.getSignature().getName());
+        Object result = joinPoint.proceed(); //object를 반환하는 메소드 원본 조인포인트를 실행한다.
+        System.out.println("Around After " + joinPoint.getSignature().getName());
+        /* 원본 조인포인트를 호출한 쪽 혹은 다른 어드바이스가 다시 실행할 수 있또록 반환한다.*/
+        return result;
+    }
+}
