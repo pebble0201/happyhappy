@@ -1,0 +1,206 @@
+250610 교육일지
+
+******************interceptor
+Spring Interceptor는 스프링 프레임워크에서 제공하는 기능 중 하나로,
+클라이언트의 요청을 가로채서 처리하는 역할을 한다.
+이를 통해 공통적인 로직(로깅, 성능 측정, 캐싱)을 처리하거나, 보안(인증, 권한) 등
+목적으로 특정 조건을 검사하고 해당 요청을 처리하거나, 무시할 수 있다.
+Interceptor는 특정 요청 URL에만 적용되도록 매핑할 수 있다는 점이 필터와 유사하다.
+하지만 필터와 달리 Interceptor는 스프링 웹 어플리케이션 컨텍스트에 구성하기 때문에
+컨테이너의 기능을 자유롭게 활용할 수 있으며, 그 내부에 선언된 모든 빈을 참조할 수 있다.
+
+@Controller
+@RequestMapping("/*") //상위요청 매핑
+public class InterceptorTestController {
+
+    @GetMapping("stopwatch") //sw url요청
+    public String handlerMethod() throws InterruptedException {
+
+        //얘 동작 이전 pre - (hand meth) - post - after
+        System.out.println("핸들러 메소드 호출함");
+        Thread.sleep(1000);
+
+        return "result"; //result로 forwarding
+    }
+}
+
+@Component //계층이 아님
+public class StopWatchInterceptor implements HandlerInterceptor {
+
+    private final MenuService menuService;
+
+    public StopWatchInterceptor(MenuService menuService) {
+        this.menuService = menuService;
+    }
+
+    /* 핸들러 메소드를 호출하기 이전에 동작하는 메소드 (전처리메소드)*/
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
+        System.out.println("preHandler 호출함");
+
+        //stopwatch on
+        long startTime = System.currentTimeMillis();
+
+        //요청객체에 저장해두고 post에 값 넘기기
+        //내가 직접 메소드 호출 못해서 request 요청객체에 저장시켜 꺼내 쓰는 것
+        request.setAttribute("startTime", startTime); //st라는 키로 넘겨줄거
+
+        return true;//true로 바꿔줘야 handlermethod 호출
+    }
+
+    /* 핸들러 메소드 동작 이후에 수행되는 메소드 (후처리)*/
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+
+        long startTime = (Long) request.getAttribute("startTime");
+        long endTime = System.currentTimeMillis();
+
+        request.removeAttribute("startTime"); //다썼으니까 지워주기
+
+        modelAndView.addObject("interval", endTime - startTime); //gap
+
+        System.out.println("postHandler 호출함");
+    }
+
+    /* 요청을 했을 때 성공 실패 관계 없이 무조건 동작하는 메소드 (제일마지막) */
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+
+        System.out.println("afterCompletioin 호출함");//하나도 동작 안하는건 등록하지 않고 단순 코드만 작성했기 때문에
+
+        menuService.method();
+    }
+
+
+}
+******************fileUpload
+
+get방식으로 전송 불가
+1. 파일 자체가 용량이 크다.(url최대 길이 255byte넘길 수 없)
+2. 파일 데이터를 인코딩해서 전달해야 깨지지 않게 서버에서 해석을 하는데,
+   url에 인코딩하는 방식으로는 파일을 인코딩할 수 없다.
+
+@Controller
+public class FileUploadController {
+
+    @PostMapping("/single-file")
+    public String singleFileUpload(@RequestParam String singleFileDescription, //name이랑 이름 똑같.
+                                   @RequestParam MultipartFile singleFile,
+                                   Model model) {
+
+//        System.out.println("singleFileDescription = " + singleFileDescription);
+//        System.out.println("singleFile = " + singleFile);
+
+        /* 서버로 전달 된 File을 서버에서 설정하는 경로에 저장한다.*/
+        String root = "src/main/resources/static";
+        String filePath = root + "/uploadFiles";
+        File dir = new File(filePath);
+        System.out.println(dir.getAbsolutePath());
+
+        if(!dir.exists()) { //존재하지 않으면
+            dir.mkdirs(); //이거 만들어줄거
+        }
+
+        /* 파일명 변경 처리*/
+        String originFileName = singleFile.getOriginalFilename(); //고유한 파일명 가져오기
+
+        String ext = originFileName.substring(originFileName.lastIndexOf("."));
+        System.out.println("ext = " + ext); //확장자 분리
+
+        String savedName = UUID.randomUUID() + ext; //고유한id만들고 싶을 떄 uuid !!
+        System.out.println("savedName = " + savedName);
+
+        /* 파일 저장 */
+        try {
+            singleFile.transferTo(new File(filePath + "/" + savedName));
+            model.addAttribute("message", "파일 업로드 완료!!");
+        } catch (IOException e) {
+            model.addAttribute("message", "파일 업로드 실패!!");
+                }
+
+        return "result";
+    }
+
+    @PostMapping("/multi-file")
+    public String multiFileUpload(@RequestParam String multiFileDescription,
+                                  @RequestParam List<MultipartFile> multiFile,
+                                  Model model) {
+
+        System.out.println("multiFileDescription = " + multiFileDescription);
+        System.out.println("multiFile = " + multiFile);
+
+        String root = "src/main/resources/static";
+        String filePath = root + "/uploadFiles";
+        File dir = new File(filePath);
+
+        if(!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        List<FileDTO> files = new ArrayList<>();
+
+        /* 파일명 변경 처리 후 저장 : 다중 파일 반복문 처리 */
+        try {
+            for (MultipartFile file : multiFile) {
+
+                String originName = file.getOriginalFilename();
+
+                System.out.println("originName = " + originName);
+
+                String ext = originName.substring(originName.lastIndexOf("."));
+
+                String savedName = UUID.randomUUID() + ext; //확장자 붙여서 저장
+
+                /* 파일에 관한 정보 추출 후 보관 */
+                files.add(new FileDTO(originName, savedName, filePath, multiFileDescription)); //dto형태로 저장
+
+                /* 파일 저장 */
+
+                file.transferTo(new File(filePath + "/" + savedName));
+            }
+            model.addAttribute("message", "파일 업로드 완료!!");
+
+        } catch(IOException e){
+
+            /* 파일 저장 중간에 실패 시 이전에 저장 된 파일 삭제*/
+            for(FileDTO file : files) {
+                new File(filePath + "/" + file.getSavedName()).delete();
+            }
+
+            model.addAttribute("message", "파일업로드 실패");
+            }
+
+
+        return "result";
+    }
+
+
+*********************thymeleaf
+
+타임리프에서는 기본적으로 제공되는 utility objects의 기능들을 통해 손쉽게 원하는 값으로 처리할 수 있다.
+Strings : 문자 관련 편의 기능 제공
+Numbers : 숫자 서식 기능 제공
+Objects : 객체 관련 기능 제공
+Arrays : 배열 관련 기능 제공
+Lists
+Maps
+Messages
+Dates
+Calendars
+
+주석의 종류
+parser-level 주석
+: parser-level주석은 정적인 페이지에서는 주석으로 있다가
+thymeleaf가 처리될 때 제거되어 클라이언트에게 노출되지 않는다.
+
+prototype-level 주석
+: prototype-level 주석은 정적인 페이지에서 주석으로 있다가 
+thymeleaf 처리 후에는 화면에 보여지게 되는 주석
+
+
+@Configuration
+@ComponentScan(basePackages = "com.ohgiraffers.thymeleaf") 
+//스캔기능 변경
+public class ContextConfiguration {
+}
