@@ -1,5 +1,7 @@
 250611 교육일지
 
+매일 푸는 문제 시간 
+
 문제 설명
 얀에서는 매년 달리기 경주가 열립니다. 해설진들은 선수들이 자기 바로 앞의 선수를 추월할 때 추월한 선수의 이름을 부릅니다. 예를 들어 1등부터 3등까지 "mumu", "soe", "poe" 선수들이 순서대로 달리고 있을 때, 해설진이 "soe"선수를 불렀다면 2등인 "soe" 선수가 1등인 "mumu" 선수를 추월했다는 것입니다. 즉 "soe" 선수가 1등, "mumu" 선수가 2등으로 바뀝니다.
 
@@ -104,3 +106,190 @@ class Solution {
     }
 }
 
+
+오늘
+** 내가 한 메뉴 수정, 삭제, 상세조회
+
+package com.ohgiraffers.crud.menu.controller;
+
+import com.ohgiraffers.crud.menu.model.dto.CategoryDTO;
+import com.ohgiraffers.crud.menu.model.dto.MenuDTO;
+import com.ohgiraffers.crud.menu.model.service.MenuService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
+
+@Controller
+@RequestMapping("/menu") //상위요청 menu
+public class MenuController {
+
+    private final MenuService menuService;
+
+    public MenuController(MenuService menuService) {
+        this.menuService = menuService;
+    }
+
+    @GetMapping("/list")
+    public String findMenuList(Model model) {
+
+        List<MenuDTO> menuList = menuService.findAllMenu();
+
+//        for(MenuDTO menus : menuList) {
+//            System.out.println(menus);
+//        }
+
+        model.addAttribute("menuList",menuList);
+
+        return "menu/list";
+    }
+
+    @GetMapping("/result")
+    public String selectMenu(Model model) {
+
+        List<MenuDTO> menu = menuService.selectMenu();
+
+        model.addAttribute("menu", menu);
+
+        return "menu/result";
+    }
+
+    @GetMapping("/regist")
+    public void registPage() {}
+
+    @GetMapping(value = "category", produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public List<CategoryDTO> findCategoryList() {
+
+//        menuService.findAllCategory().forEach(System.out::println);
+
+        return menuService.findAllCategory();
+    }
+
+    @PostMapping("/regist")
+    public String registMenu(MenuDTO newMenu, RedirectAttributes rttr) {
+
+        menuService.registNewMenu(newMenu);
+
+        rttr.addFlashAttribute("successMessage", "신규 메뉴 등록에 성공하셨음");
+
+        return "redirect:/menu/list";
+    }
+
+    @GetMapping("/update")
+    public void updatePage() {}
+
+    @PostMapping("/update")
+    public String updateMenu(MenuDTO newMenu, RedirectAttributes rttr) {
+
+        menuService.updateMenu(newMenu);
+
+        rttr.addFlashAttribute("successMessage","메뉴 수정에 성공하셨음");
+
+        return "redirect:/menu/list";
+    }
+
+    @GetMapping("/delete")
+    public void deletePage() {}
+
+    @PostMapping("/delete")
+    public String deleteMenu(MenuDTO newMenu, RedirectAttributes rttr) {
+
+        menuService.deleteMenu(newMenu);
+
+        rttr.addFlashAttribute("successMessage","메뉴 삭제에 성공하셨음");
+
+        return "redirect:/menu/list";
+    }
+
+    @GetMapping("/select")
+    public void selectPage() {}
+
+    @PostMapping("/select")
+    public String selectMenu(RedirectAttributes rttr, Model model, @RequestParam int code) {
+
+        rttr.addFlashAttribute("successMessage","메뉴 상세 조회!");
+
+        List<MenuDTO> menu = menuService.selectMenu(code);
+
+        model.addAttribute("menu",menu);
+
+        return "redirect:/menu/result";
+    }
+
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:include="common/header.html"></div>
+<h3>메뉴 삭제삭제삭제</h3>
+<form action="/menu/delete" method="post">
+    <label>메뉴 코드 : </label><input type="number" name="code"><br>
+    <input type="submit" value="전송">
+</form>
+
+<script>
+    fetch("/menu/category")
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+
+            const $categoryCode = document.getElementById("categoryCode");
+            for(let index in data) {
+                const $option = document.createElement('option');
+                $option.value = data[index].code;
+                $option.textContent = data[index].name;
+                $categoryCode.appendChild($option);
+            }
+        });
+</script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:include="common/header.html"></div>
+<h3>메뉴 수정</h3>
+<form action="/menu/update" method="post">
+  <label>메뉴 코드 : </label><input type="number" name="code"><br>
+  <label>메뉴 이름 : </label><input type="text" name="name"><br>
+  <label>메뉴 가격 : </label><input type="number" name="price"><br>
+  <label>카테고리 코드 : </label>
+  <select name="categoryCode" id="categoryCode"></select><br>
+  <label>판매 상태 :</label>
+  <select name="orderableStatus">
+    <option value="Y">Y</option>
+    <option value="N">N</option>
+  </select>
+  <input type="submit" value="전송">
+</form>
+
+<script>
+  fetch("/menu/category")
+          .then(res => res.json())
+          .then(data => {
+            console.log(data);
+
+            const $categoryCode = document.getElementById("categoryCode");
+            for(let index in data) {
+              const $option = document.createElement('option');
+              $option.value = data[index].code;
+              $option.textContent = data[index].name;
+              $categoryCode.appendChild($option);
+            }
+          });
+</script>
+</body>
+</html>
