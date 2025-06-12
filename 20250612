@@ -7,3 +7,176 @@ Thymeleaf문법에 대해서도 배웠다. 현재 팀 스터디를 하면서 mvc
 그 페이지안에서 주석은 ###이고, 전제 회원을 조회할 때는 get방식으로 지정해주었기 때문에 GET localhost:8080/entity/users라고 작성해준 뒤 동작 버튼을 눌러 console창에서 뜨는 것을 확인했다. 
 신규 회원을 등록하고 그 회원을 수정하기 위해서는 무조건 등록이 필수이며, 삭제 또한 그렇다.
 없는 회원을 수정하거나 삭제하면 status가 500으로 뜨며 internal server error가 뜬다. 전체 조회를 성공하면 httpstatuscode는 200으로 뜨고 결과도 잘 나온다. 
+
+package com.ohgiraffers.restapi.section02.responseentity;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.util.*;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/entity")
+public class ResponseEntityTestController {
+
+    /*
+    * [ResponseEntity]
+    * 결과 데이터와 HTTP 상태 코드를 직접 제어할 수 있는 클래스이다.
+    * HttpStatus, HttpHeader, HttpBody를 포함한다.
+    */
+
+    private List<UserDTO> users;
+
+    public ResponseEntityTestController() {
+
+        users = new ArrayList<>();
+        //생성자로 초기화
+        users.add(new UserDTO(1, "user01", "pass01", "다람쥐", new Date()));
+        users.add(new UserDTO(2, "user02", "pass02", "고릴라", new Date()));
+        users.add(new UserDTO(3, "user03", "pass03", "판다", new Date()));
+    }
+
+    /* 회원 전체 조회*/
+    @GetMapping("/users")
+    public ResponseEntity<ResponseMessage> findAllUsers() {
+
+        /* 응답 헤더 설정 */
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+
+        /* 응답 데이터 설정 */
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("users", users); //필드 넣어주기
+
+        ResponseMessage responseMessage = new ResponseMessage(200,"조회성공",responseMap);
+
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+    }
+
+    /* 회원 상세 조회 */
+    @GetMapping("/users/{userNo}")
+    public ResponseEntity<ResponseMessage> findUserByNo(@PathVariable int userNo) {
+
+        /* 응답 헤더 설정 */
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        UserDTO foundUser = users.stream().filter(user -> user.getNo() == userNo)
+                .collect(Collectors.toList()).get(0);
+
+        /* 응답 데이터 설정 */
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("user", foundUser);
+        return ResponseEntity.
+                ok()
+                .headers(headers)
+                .body(new ResponseMessage(200, "조회성공", responseMap));
+    }//리턴 편한거 사용
+
+    /* 신규 회원 등록 */
+    @PostMapping("/users")
+    public ResponseEntity<?> registUser(@RequestBody UserDTO newUser) {
+
+        System.out.println("newUser = " + newUser);
+
+        int lastUserNo = users.get(users.size() - 1).getNo(); //제일 마지막 번호 인덱스
+        newUser.setNo(lastUserNo + 1); //4번에 등록
+
+        users.add(newUser);
+
+        //자원이 생성됐으니까 어디로 이동해~ 라고 알려줘야해
+        return ResponseEntity
+                .created(URI.create("/entity/users/" + users.get(users.size() - 1 ).getNo()))
+                .build();
+    }
+
+    /* 기존 회원 수정 */
+    @PutMapping("/users/{userNo}") //pathvariable로 userno
+    public ResponseEntity<?> modifyUser(@PathVariable int userNo, @RequestBody UserDTO modifyInfo) {
+
+        UserDTO foundUser = users.stream().filter(user -> user.getNo() == userNo)
+                .collect(Collectors.toList()).get(0);
+
+        foundUser.setId(modifyInfo.getId());
+        foundUser.setPwd(modifyInfo.getPwd());
+        foundUser.setName(modifyInfo.getName());
+
+        //201은 자원이 변경된걸 의미
+        return ResponseEntity
+                .created(URI.create("/entity/users/" + userNo))
+                .build();
+    }
+
+    /* 기존 회원 삭제 */
+    @DeleteMapping("/users/{userNo}")
+    public ResponseEntity<?> removeUser(@PathVariable int userNo) {
+
+        UserDTO foundUser = users.stream().filter(user -> user.getNo() == userNo)
+                .collect(Collectors.toList()).get(0);
+
+        users.remove(foundUser);
+
+        return ResponseEntity
+                .noContent() //204번 더이상 참조할게 없는?? 변경될게 없는?? 자원수정요청 보냈지만 변경된 내용 없을때 !
+                .build();
+    }
+}
+
+
+package com.ohgiraffers.restapi.section02.responseentity;
+
+import java.util.Map;
+
+public class ResponseMessage {
+
+    private int httpStatusCode;
+    private String message;
+    private Map<String, Object> results;
+
+    public ResponseMessage() {}
+
+    public ResponseMessage(int httpStatusCode, String message, Map<String, Object> results) {
+        this.httpStatusCode = httpStatusCode;
+        this.message = message;
+        this.results = results;
+    }
+
+    public int getHttpStatusCode() {
+        return httpStatusCode;
+    }
+
+    public void setHttpStatusCode(int httpStatusCode) {
+        this.httpStatusCode = httpStatusCode;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Map<String, Object> getResults() {
+        return results;
+    }
+
+    public void setResults(Map<String, Object> results) {
+        this.results = results;
+    }
+
+    @Override
+    public String toString() {
+        return "ResponseMessage{" +
+                "httpStatusCode=" + httpStatusCode +
+                ", message='" + message + '\'' +
+                ", results=" + results +
+                '}';
+    }
+}
