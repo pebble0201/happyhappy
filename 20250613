@@ -1,5 +1,6 @@
 250613 교육일지
 
+hateoas와 swagger에 대해 공부했다. swagger는 프론트엔드와 같이 하는데 중요한 역할을 할 것 같다.
 package com.ohgiraffers.restapi.section04.hateoas;
 
 import org.springframework.hateoas.EntityModel;
