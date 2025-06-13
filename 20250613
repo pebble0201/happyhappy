@@ -1,0 +1,339 @@
+250613 교육일지
+
+package com.ohgiraffers.restapi.section04.hateoas;
+
+import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.nio.charset.Charset;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+@RestController
+@RequestMapping("/hateoas")
+public class HateoasTestController {
+
+    private List<UserDTO> users;
+
+    public HateoasTestController() {
+
+        users = new ArrayList<>();
+
+        users.add(new UserDTO(1, "user01", "pass01", "다람쥐", new Date()));
+        users.add(new UserDTO(2, "user02", "pass02", "코알라", new Date()));
+        users.add(new UserDTO(3, "user03", "pass03", "판다", new Date()));
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<ResponseMessage> findAllUsers() {
+
+        /* 응답 헤더 설정 */
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+
+        /* Hateoas 설정 */
+        List<EntityModel<UserDTO>> userWithRel
+                = users.stream().map(user -> EntityModel.of(
+                        user,
+                linkTo(methodOn(HateoasTestController.class).findUserByNo(user.getNo())).withSelfRel(),
+                linkTo(methodOn(HateoasTestController.class).findAllUsers()).withRel("users"))
+        ).collect(Collectors.toList());
+
+
+        /*응답 데이터 설정 */
+        Map<String , Object> responseMap = new HashMap<>();
+        responseMap.put("users", userWithRel);
+
+        ResponseMessage responseMessage = new ResponseMessage(200, "조회성공", responseMap);
+
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/users/{userNo}")
+    public ResponseEntity<ResponseMessage> findUserByNo(@PathVariable int userNo) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json",Charset.forName("UTF-8")));
+
+        UserDTO foundUser = users.stream().filter(user -> user.getNo() == userNo).collect(Collectors.toList()).get(0);
+
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("user", foundUser);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new ResponseMessage(200, "조회성공", responseMap));
+    }
+}
+
+package com.ohgiraffers.restapi.section04.hateoas;
+
+import java.util.Map;
+
+public class ResponseMessage {
+
+    private int httpStatusCode;
+    private String message;
+    private Map<String, Object> results;
+
+    public ResponseMessage() {}
+
+    public ResponseMessage(int httpStatusCode, String message, Map<String, Object> results) {
+        this.httpStatusCode = httpStatusCode;
+        this.message = message;
+        this.results = results;
+    }
+
+    public int getHttpStatusCode() {
+        return httpStatusCode;
+    }
+
+    public void setHttpStatusCode(int httpStatusCode) {
+        this.httpStatusCode = httpStatusCode;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Map<String, Object> getResults() {
+        return results;
+    }
+
+    public void setResults(Map<String, Object> results) {
+        this.results = results;
+    }
+
+    @Override
+    public String toString() {
+        return "ResponseMessage{" +
+                "httpStatusCode=" + httpStatusCode +
+                ", message='" + message + '\'' +
+                ", results=" + results +
+                '}';
+    }
+}
+
+package com.ohgiraffers.restapi.section05;
+
+import java.util.Map;
+
+public class ResponseMessage {
+
+    private int httpStatusCode;
+    private String message;
+    private Map<String, Object> results;
+
+    public ResponseMessage() {}
+
+    public ResponseMessage(int httpStatusCode, String message, Map<String, Object> results) {
+        this.httpStatusCode = httpStatusCode;
+        this.message = message;
+        this.results = results;
+    }
+
+    public int getHttpStatusCode() {
+        return httpStatusCode;
+    }
+
+    public void setHttpStatusCode(int httpStatusCode) {
+        this.httpStatusCode = httpStatusCode;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Map<String, Object> getResults() {
+        return results;
+    }
+
+    public void setResults(Map<String, Object> results) {
+        this.results = results;
+    }
+
+    @Override
+    public String toString() {
+        return "ResponseMessage{" +
+                "httpStatusCode=" + httpStatusCode +
+                ", message='" + message + '\'' +
+                ", results=" + results +
+                '}';
+    }
+}
+
+package com.ohgiraffers.restapi.section05;
+
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+@Configuration
+@EnableWebMvc
+public class SwaggerConfig {
+
+    @Bean
+    public OpenAPI openAPI() {
+
+        return new OpenAPI()
+                .components(new Components())
+                .info(swaggerInfo());
+    }
+
+    private Info swaggerInfo() {
+
+        return new Info()
+                .title("ohgiraffers API")
+                .description("spring boot swagger 연동 테스트")
+                .version("1.0.0");
+    }
+}
+
+package com.ohgiraffers.restapi.section05;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Tag(name = "Spring Boot Swagger 연동(user)")
+@RestController
+@RequestMapping("/swagger")
+public class SwaggerTestController {
+
+    private List<UserDTO> users;
+
+    public SwaggerTestController() {
+
+        users = new ArrayList<>();
+        //생성자로 초기화
+        users.add(new UserDTO(1, "user01", "pass01", "다람쥐", new Date()));
+        users.add(new UserDTO(2, "user02", "pass02", "고릴라", new Date()));
+        users.add(new UserDTO(3, "user03", "pass03", "판다", new Date()));
+    }
+
+    /* 회원 전체 조회*/
+    @Operation(summary = "전체 회원 조회", description = "전체 회원 목록을 조회한다.")
+    @GetMapping("/users")
+    public ResponseEntity<ResponseMessage> findAllUsers() {
+
+        /* 응답 헤더 설정 */
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+
+        /* 응답 데이터 설정 */
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("users", users); //필드 넣어주기
+
+        ResponseMessage responseMessage = new ResponseMessage(200,"조회성공",responseMap);
+
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+    }
+
+    /* 회원 상세 조회 */
+    @Operation(summary = "회원 번호로 회원 조회", description = "회원 번호를 통해 해당하는 회원 번호를 조회한다.")
+    @GetMapping("/users/{userNo}")
+    public ResponseEntity<ResponseMessage> findUserByNo(@PathVariable int userNo) {
+
+        /* 응답 헤더 설정 */
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        UserDTO foundUser = users.stream().filter(user -> user.getNo() == userNo)
+                .collect(Collectors.toList()).get(0);
+
+        /* 응답 데이터 설정 */
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("user", foundUser);
+        return ResponseEntity.
+                ok()
+                .headers(headers)
+                .body(new ResponseMessage(200, "조회성공", responseMap));
+    }//리턴 편한거 사용
+
+    /* 신규 회원 등록 */
+    @Operation(summary = "신규 회원 등록")
+    @PostMapping("/users")
+    public ResponseEntity<?> registUser(@RequestBody UserDTO newUser) {
+
+        System.out.println("newUser = " + newUser);
+
+        int lastUserNo = users.get(users.size() - 1).getNo(); //제일 마지막 번호 인덱스
+        newUser.setNo(lastUserNo + 1); //4번에 등록
+
+        users.add(newUser);
+
+        //자원이 생성됐으니까 어디로 이동해~ 라고 알려줘야해
+        return ResponseEntity
+                .created(URI.create("/entity/users/" + users.get(users.size() - 1 ).getNo()))
+                .build();
+    }
+
+    /* 기존 회원 수정 */
+    @Operation(summary = "회원 정보 수정")
+    @PutMapping("/users/{userNo}") //pathvariable로 userno
+    public ResponseEntity<?> modifyUser(@PathVariable int userNo, @RequestBody UserDTO modifyInfo) {
+
+        UserDTO foundUser = users.stream().filter(user -> user.getNo() == userNo)
+                .collect(Collectors.toList()).get(0);
+
+        foundUser.setId(modifyInfo.getId());
+        foundUser.setPwd(modifyInfo.getPwd());
+        foundUser.setName(modifyInfo.getName());
+
+        //201은 자원이 변경된걸 의미
+        return ResponseEntity
+                .created(URI.create("/entity/users/" + userNo))
+                .build();
+    }
+
+    /* 기존 회원 삭제 */
+    @Operation(summary = "회원 정보 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "회원정보 삭제 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못입력된 parameter")
+    })
+    @DeleteMapping("/users/{userNo}")
+    public ResponseEntity<?> removeUser(@PathVariable int userNo) {
+
+        UserDTO foundUser = users.stream().filter(user -> user.getNo() == userNo)
+                .collect(Collectors.toList()).get(0);
+
+        users.remove(foundUser);
+
+        return ResponseEntity
+                .noContent() //204번 더이상 참조할게 없는?? 변경될게 없는?? 자원수정요청 보냈지만 변경된 내용 없을때 !
+                .build();
+    }
+}
