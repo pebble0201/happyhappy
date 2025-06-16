@@ -579,3 +579,166 @@ public class UserService {
         }
     }
 }
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohgiraffers.sessionsecurity.user.model.dao.UserMapper">
+
+    <resultMap id="login" type="com.ohgiraffers.sessionsecurity.user.model.dto.LoginUserDTO">
+        <id property="userCode" column="USER_NO"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="userName" column="USER_NAME"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="userRole" column="USER_ROLE"/>
+    </resultMap>
+
+    <insert id="regist" parameterType="com.ohgiraffers.sessionsecurity.user.model.dto.SignupDTO">
+        INSERT INTO TBL_USER
+        (
+        USER_ID,
+        USER_NAME,
+        PASSWORD,
+        USER_ROLE
+        )
+        VALUES
+        (
+        #{ userId },
+        #{ userName },
+        #{ userPass },
+        #{ role }
+        )
+    </insert>
+
+    <select id="findByUserName" resultMap="login">
+        SELECT
+        USER_NO, USER_ID, USER_NAME, PASSWORD, USER_ROLE
+        FROM TBL_USER
+        WHERE USER_ID = #{ username }
+    </select>
+</mapper>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>★★★★★★★admin page★★★★★★★</h1>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    alert(`[[${ message }]]`);
+
+    window.location.replace("/auth/login");
+</script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>로그인</h1>
+<form th:action="@{/auth/login}" th:method="post">
+    ID: <input type="text" name="user"><br>
+    PWD: <input type="password" name="pass"><br>
+    <button>로그인</button>
+</form>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        const message = `[[${ message }]]`; //인라인스케이트(gr).....!?!?
+        if(message) {
+            alert(message)
+        }
+    </script>
+</head>
+<body>
+<h1>회원가입</h1>
+<form th:action="@{/user/signup}" th:method="post">
+    ID: <input type="text" name="userId"><br>
+    이름: <input type="text" name="userName"><br>
+    PWD: <input type="password" name="userPass"><br>
+    권한:
+    <select name="role">
+        <option value="USER">일반회원</option>
+        <option value="ADMIN">관리자</option>
+    </select><br>
+    <button>회원가입</button>
+</form>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>★★★★★★★user page★★★★★★★</h1>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Spring Security Login</title>
+</head>
+<body>
+<h1>Security Login</h1>
+<div sec:authorize="hasAnyAuthority('ADMIN')">
+    <h1>=======관리자 페이지=======</h1>
+</div>
+
+<div sec:authorize="hasAnyAuthority('USER')">
+    <h1>======회원 페이지=======</h1>
+</div>
+
+<div>
+    <h1>Login</h1>
+    <a href="auth/login">로그인</a>
+    <a href="user/signup">회원가입</a>
+    <form th:action="@{/auth/logout}" th:method="post">
+        <button>로그아웃</button>
+    </form>
+</div>
+
+<a href="admin/page"> 관리자 페이지 </a>
+<br>
+<a href="user/page"> 회원 페이지 </a>
+</body>
+</html>
+
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/login
+    username: ohgiraffers
+    password: ohgiraffers
+
+mybatis:
+  mapper-locations: mapper/**/*.xml
