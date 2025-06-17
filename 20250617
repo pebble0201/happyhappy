@@ -1,1 +1,350 @@
 250617 교육일지
+
+package com.ohgiraffers.section01.entitymanager;
+
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+
+public class EntityManagerFactoryGenerator {
+
+    private static EntityManagerFactory factory
+            = Persistence.createEntityManagerFactory("jpatest");
+
+    private EntityManagerFactoryGenerator() {}
+
+    public static EntityManagerFactory getInstasnce() {
+        return factory;
+    }
+}
+
+package com.ohgiraffers.section01.entitymanager;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+
+public class EntityManagerGenerator {
+
+    public static EntityManager getInstance() {
+
+        EntityManagerFactory factory = EntityManagerFactoryGenerator.getInstasnce();
+
+        return factory.createEntityManager();
+    }
+}
+
+package com.ohgiraffers.section02.crud;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+
+public class EntityManagerCRUD {
+
+    private EntityManager entityManager; //필요할때마다 꺼내쓸예정 entitymanager
+
+    /* 1. 특정 메뉴 코드로 메뉴 조회하는 기능 */
+    public Menu findMenuByMenuCode(int menuCode) { //method호출할 때
+
+        entityManager = EntityManagerGenerator.getInstance();
+
+        return entityManager.find(Menu.class, menuCode); //ㅔㅏ
+    }
+
+    /* 2. 새로운 메뉴 저장 */
+    public Long saveAndReturnAllCount(Menu newMenu) {
+        entityManager = EntityManagerGenerator.getInstance();
+
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.begin();
+
+        entityManager.persist(newMenu); //지속..하다..저장..?
+
+        entityTransaction.commit();
+
+        return getCount(entityManager);
+
+    }
+
+    /* 메뉴 개수 조회하는 기능*/
+    private Long getCount(EntityManager entityManager) {
+        /* JPQL 문법 : 나중 별도의 챕터에서 다룰 예정이지만 간단하게 써보겠읍니다. */
+        return entityManager.createQuery("SELECT COUNT(*) FROM Section02Menu", Long.class).getSingleResult(); //long type 하나
+    }
+
+    /* 3. 메뉴 이름 수정하기 */
+    public Menu modifyMenuName(int menuCode, String menuName) {
+        entityManager = EntityManagerGenerator.getInstance();
+        Menu foundMenu = entityManager.find(Menu.class, menuCode);
+
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin(); //mysql읽어보기 ^__^.....
+
+        foundMenu.setMenuName(menuName);
+
+        transaction.commit();
+
+        return foundMenu;
+    }
+
+}
+
+package com.ohgiraffers.section02.crud;
+
+import com.ohgiraffers.section01.entitymanager.EntityManagerFactoryGenerator;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+
+public class EntityManagerGenerator {
+
+    private static EntityManagerFactory factory
+            = Persistence.createEntityManagerFactory("jpatest");
+
+    private EntityManagerGenerator() {}
+
+    public static EntityManager getInstance() {
+
+        return factory.createEntityManager();
+    }
+}
+
+package com.ohgiraffers.section02.crud;
+
+import jakarta.persistence.*;
+
+@Entity(name = "Section02Menu") //gettersetterconstructor필요없
+@Table(name = "tbl_menu")
+public class Menu {
+
+    @Id
+    @Column(name = "menu_code")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int menuCode;
+
+    @Column(name = "menu_name")
+    private String menuName;
+
+    @Column(name = "menu_price")
+    private int menuPrice;
+
+    @Column(name = "category_code")
+    private int categoryCode;
+
+    @Column(name = "orderable_status")
+    private String orderableStatus;
+
+    protected Menu() {} //외부에서 new menu 생성 x(protected)
+
+    public Menu(String menuName, int menuPrice, int categoryCode, String orderableStatus) {
+        this.menuName = menuName;
+        this.menuPrice = menuPrice;
+        this.categoryCode = categoryCode;
+        this.orderableStatus = orderableStatus;
+    } //test를 위한
+
+    public int getMenuCode() {
+        return menuCode;
+    }
+
+    public void setMenuCode(int menuCode) {
+        this.menuCode = menuCode;
+    }
+
+    public String getMenuName() {
+        return menuName;
+    }
+
+    public void setMenuName(String menuName) {
+        this.menuName = menuName;
+    }
+
+    public int getMenuPrice() {
+        return menuPrice;
+    }
+
+    public void setMenuPrice(int menuPrice) {
+        this.menuPrice = menuPrice;
+    }
+
+    public int getCategoryCode() {
+        return categoryCode;
+    }
+
+    public void setCategoryCode(int categoryCode) {
+        this.categoryCode = categoryCode;
+    }
+
+    public String getOrderableStatus() {
+        return orderableStatus;
+    }
+
+    public void setOrderableStatus(String orderableStatus) {
+        this.orderableStatus = orderableStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "Menu{" +
+                "menuCode=" + menuCode +
+                ", menuName='" + menuName + '\'' +
+                ", menuPrice=" + menuPrice +
+                ", categoryCode=" + categoryCode +
+                ", orderableStatus='" + orderableStatus + '\'' +
+                '}';
+    }
+}
+
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" version="2.2">
+    <!-- 엔티티 매니저 팩토리를 식별하기 위한 이름 설정 -->
+    <persistence-unit name="jpatest">
+
+        <class>com.ohgiraffers.section02.crud.Menu</class>
+        <!--이 환경에서만!-->
+        <properties>
+            <!-- 데이터 베이스 연결 정보 -->
+            <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/menudb"/>
+            <property name="jakarta.persistence.jdbc.user" value="ohgiraffers"/>
+            <property name="jakarta.persistence.jdbc.password" value="ohgiraffers"/>
+            <!-- hibernate 설정 (실행 되는 sql 구문을 format 형태로 보여준다) -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>
+
+package com.ohgiraffers.section01.entitymanager;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EntityManagerFactoryGeneratorTests {
+
+    @Test
+    @DisplayName("엔티티 메니저 팩토리 생성 확인") //명칭이 이렇게 보였음 좋겠땅.
+    void testGenerateEntityManagerFactory() {
+        //given
+
+        //when
+        EntityManagerFactory factory = EntityManagerFactoryGenerator.getInstasnce();
+
+        //then
+        assertNotNull(factory);
+    }
+
+    @Test
+    @DisplayName("엔티티 매니저 싱글톤 인스턴스 확인")
+    void testIsEntityManagerFactorySingletonInstance() {
+        //given
+
+        //when
+        EntityManagerFactory factory1 = EntityManagerFactoryGenerator.getInstasnce();
+        EntityManagerFactory factory2 = EntityManagerFactoryGenerator.getInstasnce();
+
+        //then
+        assertEquals(factory1,factory2);
+    }
+
+    @Test
+    @DisplayName("엔티티 메니저 생성 확인")
+    void testGeneratorEntityManager() {
+        //given
+
+        //when
+        EntityManager entityManager = EntityManagerGenerator.getInstance();
+
+        //then
+        assertNotNull(entityManager);
+    }
+
+    @Test
+    @DisplayName("엔티티 메니저 스코프 확인")
+    void testEntityManagerLifeCycle() {
+        //given
+
+        //when
+        EntityManager entityManager1 = EntityManagerGenerator.getInstance();
+        EntityManager entityManager2 = EntityManagerGenerator.getInstance();
+
+        //then
+        assertNotEquals(entityManager1, entityManager2);
+    }
+}
+
+package com.ohgiraffers.section02.crud;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.ArrayList;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class EntityManagerCRUDTests {
+
+    private EntityManagerCRUD crud;
+
+    @BeforeEach
+    void initManager() {
+        this.crud = new EntityManagerCRUD();
+    }
+
+    @DisplayName("메뉴 코드로 메뉴 조회 테스트")
+    @ParameterizedTest
+    @CsvSource({"1,1", "2,2", "3,3"})
+    void testFindMenuByMenuCode(int menuCode, int expected) {
+        //given
+//        int menuCode = 1;
+
+        //when
+        Menu foundMenu = crud.findMenuByMenuCode(menuCode);
+
+        //then
+        assertEquals(expected, foundMenu.getMenuCode());
+        System.out.println("foundMenu : " + foundMenu);
+
+    }
+
+    private static Stream<Arguments> newMenu() {
+        return Stream.of(
+                Arguments.of(
+                        "신메뉴",
+                        35000,
+                        4,
+                        "Y"
+                )
+        );
+    }
+
+    @DisplayName("새로운 메뉴 추가 테스트")
+    @ParameterizedTest
+    @MethodSource("newMenu") //메소드 호출, 파라미터로 쓰겠따.
+    void testRegist(String menuName, int menuPrice, int categoryCode, String orderableStatus) {
+
+        Menu newMenu = new Menu(menuName, menuPrice, categoryCode, orderableStatus);
+        Long count = crud.saveAndReturnAllCount(newMenu);
+
+        assertEquals(24,count);
+    }
+
+    @DisplayName("메뉴 이름 수정 테스트")
+    @ParameterizedTest
+    @CsvSource("1, 변경된 이름") //직접 parameter
+    void testModifyMenuName(int menuCode, String menuName) {
+        //when
+        Menu modifiedMenu = crud.modifyMenuName(menuCode, menuName);
+
+        //then
+        assertEquals(menuName, modifiedMenu.getMenuName());
+    }
+}
