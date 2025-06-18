@@ -17,4 +17,9 @@ sql문 작성할 필요 없고
 너무 복잡한 sql문 작성엔 맞지 않
 mybatis 등과 혼용하여 사용하면 됨
 
-생명주기
+영속성 프레임워크인데.
+jpa      orm기술인지
+mybatis  sql mapper인지..
+
+manage entity 영속
+detached entity 준영속
