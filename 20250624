@@ -1,3 +1,25 @@
 250624 교육일지
 
 menu -> menuDTO
+
+my batis -> jpa로 ! 변경
+mb : orm은 아님 객체 관계 매핑 object relationship mapping
+
+  db      |      java            : concept 달라
+관계형          객체 지향
+
+서로 소통할 수 있게 하는 'jpa' 기술 ! 중간에서 괴리감 해소
+db와의 연동은) java에서 전부 jdbc로 되어있, (psmt) ...
+entity manager ! !
+jpa spring 환경 spring data jpa 또 한 번 편 리 하 ㄱ ㅔㅅ ㅏ 용 할 수 있 도록..
+
+
+jpaRepository 상속받아 사용 interface type 
+JpaRepository<Entity. id> 간단한 crud 가능
+findById, findAll, findByMenuPrice(query method), findByMenuName
+내가 어떤 이름 지어서 찾아오거나,, 이름 지어서 메소드 사용 ㅇ
+복잡한 조회 구문들은 다른 방식 ! jpql, native query, ..
+
+save, delete .. 수정은 객체 찾아와서 변경 감지하여 update 
+
+thank you JpaRepository ! ★^^☆
