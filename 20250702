@@ -1,0 +1,83 @@
+250702
+
+Microsoft Windows [Version 10.0.22631.3447]
+(c) Microsoft Corporation. All rights reserved.
+
+D:\lecture\13_react>npx create-next-app@latest 01_nexts-app 
+Need to install the following packages:
+create-next-app@15.3.4
+Ok to proceed? (y)
+
+√ Would you like to use TypeScript? ... No / Yes
+√ Would you like to use ESLint? ... No / Yes
+√ Would you like to use Tailwind CSS? ... No / Yes
+√ Would you like your code inside a `src/` directory? ... No / Yes
+√ Would you like to use App Router? (recommended) ... No / Yes
+√ Would you like to use Turbopack for `next dev`? ... No / Yes
+√ Would you like to customize the import alias (`@/*` by default)? ... No / Yes       
+Creating a new Next.js app in D:\lecture\13_react\01_nexts-app.
+
+
+
+Using npm.
+
+
+Using npm.
+Using npm.
+
+Initializing project with template: app
+
+Initializing project with template: app
+
+
+
+
+Installing dependencies:
+- react
+- react-dom
+- next
+
+Installing devDependencies:
+- eslint
+- eslint-config-next
+- @eslint/eslintrc
+
+
+added 304 packages, and audited 305 packages in 28s
+
+131 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+Success! Created 01_nexts-app at D:\lecture\13_react\01_nexts-app
+
+
+D:\lecture\13_react> cd 05_router
+
+D:\lecture\13_react\05_router> cd 01_nexts-app
+
+D:\lecture\13_react\05_router\01_nexts-app> npm install
+
+up to date, audited 305 packages in 843ms
+
+131 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+D:\lecture\13_react\05_router\01_nexts-app> npm run dev
+
+> 01_nexts-app@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.3.4
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.102:3000
+
+ ✓ Starting...
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+ ✓ Ready in 1236ms
